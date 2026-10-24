@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ড্যাশবোর্ড - WKD EdTech</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Hind Siliguri', sans-serif; } </style>
+</head>
+<body class="bg-gray-50 h-screen">
+
+    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg">
+        <h1 class="text-2xl font-bold">ড্যাশবোর্ড</h1>
+        <button id="logout-btn" class="bg-white text-red-600 px-4 py-2 rounded-full font-semibold hover:bg-gray-100 transition">লগআউট</button>
+    </nav>
+
+    <div class="p-6 max-w-4xl mx-auto mt-10 text-center">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">স্বাগতম, শিক্ষার্থী! 🎓</h2>
+        <p class="text-gray-600 mb-8">এখান থেকে আপনি আপনার ক্লাস, ভিডিও এবং এআই সলভার ব্যবহার করতে পারবেন।</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
+                <h3 class="text-xl font-bold text-blue-600 mb-2">🎬 আজকের লেসন</h3>
+                <p class="text-gray-600">নিউটনের গতিসূত্র - ভিডিও দেখতে এখানে ক্লিক করুন।</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
+                <h3 class="text-xl font-bold text-blue-600 mb-2">📝 সাপ্তাহিক পরীক্ষা</h3>
+                <p class="text-gray-600">এই সপ্তাহের কুইজে অংশ নিন।</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        // ⚠️ এখানে আপনার Firebase কনফিগারেশন কোডটি বসান (যেটি login.html-এ দিয়েছেন) ⚠️
+        const firebaseConfig = {
+            apiKey: "AIzaSyCb7qgYhkbEex4n5fo280Sv_aFDdvi3WKY",
+            authDomain: "wkd-edtech-app.firebaseapp.com",
+            projectId: "wkd-edtech-app",
+            storageBucket: "wkd-edtech-app.firebasestorage.app",
+            messagingSenderId: "454183111366",
+            appId: "1:454183111366:web:1999d23b19bebde1fe65c7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // চেক করা: ইউজার লগইন করা আছে কিনা। না থাকলে লগইন পেজে পাঠাবে।
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "login.html";
+            }
+        });
+
+        // লগআউট বাটন
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.href = "login.html";
+            });
+        });
+    </script>
+</body>
+</html>
