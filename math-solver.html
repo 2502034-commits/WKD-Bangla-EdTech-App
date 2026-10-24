@@ -11,32 +11,71 @@
 <body class="bg-gray-50 h-screen">
 
     <!-- হেডার -->
-    <nav class="bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center">
+    <nav class="bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center sticky top-0 z-50">
         <h1 class="text-xl font-bold">🤖 AI ম্যাথ সলভার</h1>
-        <a href="dashboard.html" class="bg-white text-blue-600 px-4 py-1 rounded-full font-semibold text-sm">ফিরে যান</a>
+        <a href="dashboard.html" class="bg-white text-blue-600 px-4 py-1 rounded-full font-semibold text-sm hover:bg-gray-100 transition">ফিরে যান</a>
     </nav>
 
-    <div class="p-4 max-w-2xl mx-auto mt-6">
+    <div class="p-4 max-w-2xl mx-auto mt-4 pb-10">
+        
         <!-- ইনপুট এরিয়া -->
         <div class="bg-white p-6 rounded-xl shadow border border-gray-100 mb-6">
             <label class="block text-gray-700 font-semibold mb-2">আপনার গণিতের প্রশ্নটি লিখুন:</label>
-            <textarea id="math-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 mb-4" rows="4" placeholder="উদাহরণ: 2x + 5 = 15, তবে x এর মান কত?"></textarea>
             
-            <button id="solve-btn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">
+            <textarea id="math-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 mb-3 text-lg" rows="3" placeholder="উদাহরণ: 2x + 5 = 15"></textarea>
+            
+            <!-- কাস্টম ম্যাথ কিবোর্ড -->
+            <div class="bg-gray-100 p-2 rounded-lg mb-4">
+                <p class="text-xs text-gray-500 mb-2 font-semibold">ম্যাথ কিবোর্ড (ট্যাপ করুন):</p>
+                <div class="grid grid-cols-6 gap-2">
+                    <button onclick="insertSymbol('+')" class="bg-white py-2 rounded shadow text-lg font-bold hover:bg-blue-50 active:bg-blue-100 transition">+</button>
+                    <button onclick="insertSymbol('-')" class="bg-white py-2 rounded shadow text-lg font-bold hover:bg-blue-50 active:bg-blue-100 transition">-</button>
+                    <button onclick="insertSymbol('×')" class="bg-white py-2 rounded shadow text-lg font-bold hover:bg-blue-50 active:bg-blue-100 transition">×</button>
+                    <button onclick="insertSymbol('÷')" class="bg-white py-2 rounded shadow text-lg font-bold hover:bg-blue-50 active:bg-blue-100 transition">÷</button>
+                    <button onclick="insertSymbol('=')" class="bg-white py-2 rounded shadow text-lg font-bold hover:bg-blue-50 active:bg-blue-100 transition">=</button>
+                    <button onclick="insertSymbol('√')" class="bg-white py-2 rounded shadow text-lg font-bold hover:bg-blue-50 active:bg-blue-100 transition">√</button>
+                    
+                    <button onclick="insertSymbol('x')" class="bg-white py-2 rounded shadow text-lg font-bold hover:bg-blue-50 active:bg-blue-100 transition">x</button>
+                    <button onclick="insertSymbol('y')" class="bg-white py-2 rounded shadow text-lg font-bold hover:bg-blue-50 active:bg-blue-100 transition">y</button>
+                    <button onclick="insertSymbol('^')" class="bg-white py-2 rounded shadow text-lg font-bold hover:bg-blue-50 active:bg-blue-100 transition">^</button>
+                    <button onclick="insertSymbol('(')" class="bg-white py-2 rounded shadow text-lg font-bold hover:bg-blue-50 active:bg-blue-100 transition">(</button>
+                    <button onclick="insertSymbol(')')" class="bg-white py-2 rounded shadow text-lg font-bold hover:bg-blue-50 active:bg-blue-100 transition">)</button>
+                    <button onclick="insertSymbol('/')" class="bg-white py-2 rounded shadow text-lg font-bold hover:bg-blue-50 active:bg-blue-100 transition">/</button>
+                </div>
+            </div>
+
+            <button id="solve-btn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition shadow-md">
                 সমাধান করুন
             </button>
         </div>
 
-        <!-- আউটপুট এরিয়া (প্রথমে লুকানো থাকবে) -->
+        <!-- আউটপুট এরিয়া -->
         <div id="result-area" class="bg-green-50 p-6 rounded-xl shadow border border-green-200 hidden">
-            <h3 class="text-xl font-bold text-green-800 mb-4">AI শিক্ষকের উত্তর:</h3>
-            <div id="result-text" class="text-gray-800 leading-relaxed whitespace-pre-wrap">
+            <h3 class="text-xl font-bold text-green-800 mb-4 flex items-center">
+                <span class="mr-2">👨‍🏫</span> AI শিক্ষকের উত্তর:
+            </h3>
+            <div id="result-text" class="text-gray-800 leading-relaxed whitespace-pre-wrap text-lg">
                 <!-- এখানে উত্তর আসবে -->
             </div>
         </div>
     </div>
 
     <script>
+        // কিবোর্ড থেকে চিহ্ন বসানোর ফাংশন
+        function insertSymbol(symbol) {
+            const input = document.getElementById('math-input');
+            const startPos = input.selectionStart;
+            const endPos = input.selectionEnd;
+            
+            // কার্সর যেখানে আছে, সেখানে চিহ্নটি বসিয়ে বাকি লেখা যোগ করা
+            input.value = input.value.substring(0, startPos) + symbol + input.value.substring(endPos, input.value.length);
+            
+            // কার্সরকে চিহ্নটির ঠিক পরে নিয়ে যাওয়া
+            input.selectionStart = input.selectionEnd = startPos + symbol.length;
+            input.focus();
+        }
+
+        // সমাধান বাটনে ক্লিক করলে
         document.getElementById('solve-btn').addEventListener('click', () => {
             const input = document.getElementById('math-input').value;
             const resultArea = document.getElementById('result-area');
@@ -49,21 +88,23 @@
             }
 
             // লোডিং স্টেট
-            btn.innerText = "AI চিন্তা করছে...";
+            btn.innerHTML = "⏳ AI চিন্তা করছে...";
             btn.disabled = true;
+            btn.classList.add('opacity-75');
 
             // আপাতত ডেমো আউটপুট (পরবর্তীতে এখানে আসল AI যুক্ত হবে)
             setTimeout(() => {
                 resultArea.classList.remove('hidden');
                 resultText.innerHTML = `আপনার প্রশ্ন: <strong>${input}</strong><br><br>
-                <em>(এটি একটি ডেমো উত্তর। শীঘ্রই এখানে আসল AI যুক্ত হবে)</em><br><br>
+                <span class="text-sm text-gray-500 italic">(এটি একটি ডেমো উত্তর। শীঘ্রই এখানে আসল AI যুক্ত হবে)</span><br><br>
                 <strong>ধাপ ১:</strong> প্রথমে চলকগুলোকে একপাশে নেই।<br>
                 <strong>ধাপ ২:</strong> উভয় পক্ষ থেকে সাধারণ সংখ্যা বিয়োগ করি।<br>
                 <strong>ধাপ ৩:</strong> অবশেষে x এর মান বের করি।`;
                 
-                btn.innerText = "সমাধান করুন";
+                btn.innerHTML = "সমাধান করুন";
                 btn.disabled = false;
-            }, 1500); // ১.৫ সেকেন্ড পর উত্তর দেখাবে
+                btn.classList.remove('opacity-75');
+            }, 1500);
         });
     </script>
 </body>
