@@ -160,15 +160,18 @@ document.getElementById('solve-btn').addEventListener('click', async () => {
 
     try {
         // মডেলের নাম gemini-1.5-flash দেওয়া হলো
-           const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY)}`, {
-               method: 'POST',
-                 headers: {
-              'Content-Type': 'application/json'
-            },
-               body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
-            })
-         });
+           // এখানে আপনার Cloudflare Worker-এর লিংক বসানো হলো
+const workerUrl = "https://wkd-ai-proxy.hasanmdwalid37.workers.dev";
+
+const response = await fetch(workerUrl, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+    })
+});
 
         const data = await response.json();
 
