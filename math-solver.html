@@ -177,10 +177,11 @@ const response = await fetch(workerUrl, {
 
         // যদি গুগলের সার্ভার থেকে কোনো এরর আসে
         if (data.error) {
-            alert("গুগল API এরর: " + data.error.message);
-            resultText.innerHTML = `<span class="text-red-500">API এরর: ${data.error.message}</span>`;
-            return;
-        }
+    let errorMsg = data.error.message ? data.error.message : (typeof data.error === 'string' ? data.error : JSON.stringify(data.error));
+    alert("গুগল API এরর: " + errorMsg);
+    resultText.innerHTML = `<span class="text-red-500">API এরর: ${errorMsg}</span>`;
+    return;
+    }
 
         // যদি সফলভাবে উত্তর আসে
         if (data.candidates && data.candidates.length > 0) {
