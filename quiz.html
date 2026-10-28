@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সাপ্তাহিক পরীক্ষা - WKD EdTech</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Hind Siliguri', sans-serif; } </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- হেডার -->
+    <nav class="bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center sticky top-0 z-50">
+        <h1 class="text-xl font-bold">📝 সাপ্তাহিক পরীক্ষা</h1>
+        <a href="dashboard.html" class="bg-white text-blue-600 px-4 py-1 rounded-full font-semibold text-sm hover:bg-gray-100 transition">ফিরে যান</a>
+    </nav>
+
+    <div class="p-4 max-w-2xl mx-auto mt-6">
+        
+        <!-- কুইজ এরিয়া -->
+        <div id="quiz-container" class="bg-white p-6 rounded-xl shadow border border-gray-100">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full" id="question-tracker">প্রশ্ন ১ / ৩</span>
+                <span class="text-sm font-semibold text-gray-500">নম্বর: <span id="score-display">০</span></span>
+            </div>
+            
+            <h2 id="question-text" class="text-xl font-bold text-gray-800 mb-6">প্রশ্ন লোড হচ্ছে...</h2>
+            
+            <div id="options-container" class="space-y-3">
+                <!-- অপশনগুলো এখানে জাভাস্ক্রিপ্ট দিয়ে আসবে -->
+            </div>
+        </div>
+
+        <!-- রেজাল্ট এরিয়া (প্রথমে লুকানো থাকবে) -->
+        <div id="result-container" class="bg-green-50 p-8 rounded-xl shadow border border-green-200 hidden text-center">
+            <h2 class="text-3xl font-bold text-green-800 mb-4">🎉 পরীক্ষা শেষ!</h2>
+            <p class="text-lg text-gray-700 mb-2">আপনার প্রাপ্ত নম্বর:</p>
+            <p class="text-5xl font-bold text-blue-600 mb-6"><span id="final-score">০</span> / ৩</p>
+            <button onclick="location.reload()" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition">আবার পরীক্ষা দিন</button>
+        </div>
+
+    </div>
+
+    <script>
+        // কুইজের প্রশ্ন ও উত্তর
+        const quizData = [
+            {
+                question: "২x + ৫ = ১৫ হলে, x এর মান কত?",
+                options: ["৫", "১০", "১৫", "২০"],
+                correct: 0 // ০ ইনডেক্স মানে প্রথম অপশনটি সঠিক
+            },
+            {
+                question: "নিউটনের প্রথম সূত্রকে কী বলা হয়?",
+                options: ["বলের সূত্র", "জড়তার সূত্র", "প্রতিক্রিয়ার সূত্র", "মহাকর্ষ সূত্র"],
+                correct: 1 
+            },
+            {
+                question: "বৃত্তের ক্ষেত্রফলের সূত্র কোনটি?",
+                options: ["২πr", "πr²", "πd", "πr³"],
+                correct: 1 
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        const questionTracker = document.getElementById('question-tracker');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const scoreDisplay = document.getElementById('score-display');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultContainer = document.getElementById('result-container');
+        const finalScore = document.getElementById('final-score');
+
+        function loadQuestion() {
+            if (currentQuestion >= quizData.length) {
+                showResult();
+                return;
+            }
+
+            const q = quizData[currentQuestion];
+            questionTracker.innerText = `প্রশ্ন ${currentQuestion + 1} / ${quizData.length}`;
+            questionText.innerText = q.question;
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.innerText = option;
+                btn.className = "w-full text-left px-4 py-3 border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-400 transition font-medium text-gray-700";
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            const q = quizData[currentQuestion];
+            
+            // সব বাটন ডিজেবল করে দেওয়া
+            Array.from(optionsContainer.children).forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === q.correct) {
+                btnElement.classList.remove('hover:bg-blue-50', 'border-gray-300');
+                btnElement.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                score++;
+                scoreDisplay.innerText = score;
+            } else {
+                btnElement.classList.remove('hover:bg-blue-50', 'border-gray-300');
+                btnElement.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+                
+                // সঠিক উত্তরটি সবুজ করে দেখানো
+                optionsContainer.children[q.correct].classList.remove('border-gray-300');
+                optionsContainer.children[q.correct].classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+            }
+
+            // ১ সেকেন্ড পর পরবর্তী প্রশ্নে যাবে
+            setTimeout(() => {
+                currentQuestion++;
+                loadQuestion();
+            }, 1000);
+        }
+
+        function showResult() {
+            quizContainer.classList.add('hidden');
+            resultContainer.classList.remove('hidden');
+            finalScore.innerText = score;
+        }
+
+        // প্রথম প্রশ্ন লোড করা
+        loadQuestion();
+    </script>
+</body>
+</html>
