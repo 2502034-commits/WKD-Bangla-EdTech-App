@@ -58,26 +58,28 @@
 
     <!-- Firebase Script -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // আপনার Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
-            authDomain: "wkd-edtech-app.firebaseapp.com",
-            projectId: "wkd-edtech-app",
-            storageBucket: "wkd-edtech-app.appspot.com",
-            messagingSenderId: "45418311366",
-            appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
+        authDomain: "wkd-edtech-app.firebaseapp.com",
+        projectId: "wkd-edtech-app",
+        storageBucket: "wkd-edtech-app.appspot.com",
+        messagingSenderId: "45418311366",
+        appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        // ডাটাবেস থেকে ডাটা আনা
-        async function loadStudentData() {
-            // আপনার কালেকশনের নাম 'Users' এবং Document ID নিচে বসানো হলো
-            const docRef = doc(db, "Users", "1BhcqWVkdE8EV54vgKXT");
+    // লগইন করা ইউজারের ডাটা আনা
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // ইউজারের UID দিয়ে ডাটাবেসে সার্চ করা
+            const docRef = doc(db, "Users", user.uid);
             
             try {
                 const docSnap = await getDoc(docRef);
@@ -85,22 +87,29 @@
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     
-                    // HTML-এ ডাটা বসানো
-                    document.getElementById('student-name').innerText = data.name;
-                    document.getElementById('avatar').innerText = data.name.charAt(0);
-                    document.getElementById('student-class').innerText = data.class;
-                    document.getElementById('math-score').innerText = data.mathScore;
-                    document.getElementById('attendance-score').innerText = data.attendance;
+                    // নাম না থাকলে ইমেইল দেখাবে
+                    let displayName = data.name || user.email.split('@')[0]; 
+                    
+                    document.getElementById('student-name').innerText = displayName;
+                    document.getElementById('avatar').innerText = displayName.charAt(0).toUpperCase();
+                    document.getElementById('student-class').innerText = data.class || "N/A";
+                    document.getElementById('math-score').innerText = data.mathScore || "0";
+                    document.getElementById('attendance-score').innerText = data.attendance || "0";
                 } else {
-                    console.log("No such document!");
+                    // যদি ডাটা না থাকে (নতুন ইউজার)
+                    document.getElementById('student-name').innerText = user.email.split('@')[0];
+                    document.getElementById('avatar').innerText = user.email.charAt(0).toUpperCase();
+                    document.getElementById('student-class').innerText = "অনির্ধারিত";
+                    document.getElementById('math-score').innerText = "0";
+                    document.getElementById('attendance-score').innerText = "0";
                 }
             } catch (error) {
                 console.error("Error getting document:", error);
             }
+        } else {
+            window.location.href = "login.html"; // লগইন না থাকলে বের করে দেবে
         }
-
-        // ফাংশন কল করা
-        loadStudentData();
+    });
     </script>
 </body>
 </html>
