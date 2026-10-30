@@ -45,7 +45,7 @@
     <!-- Firebase Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -59,6 +59,15 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+
+// ⚠️ লগইন সেশন ব্রাউজারে সেভ রাখার জন্য এই অংশটি যোগ করা হলো ⚠️
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("Persistence set to Local");
+  })
+  .catch((error) => {
+    console.error("Error setting persistence:", error);
+  });
         const db = getFirestore(app);
 
         // ডিবাগ মেসেজ দেখানোর ফাংশন
