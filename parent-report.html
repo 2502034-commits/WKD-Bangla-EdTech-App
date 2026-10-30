@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <!-- বাকি ডেমো ডাটা (কার্যক্রম ও শিক্ষকের পরামর্শ) -->
+        <!-- বাকি ডেমো ডাটা -->
         <h3 class="text-lg font-bold text-gray-700 mb-3 ml-2">সাম্প্রতিক কার্যক্রম</h3>
         <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden mb-6">
             <div class="p-4 border-b border-gray-100 flex justify-between items-center">
@@ -58,58 +58,58 @@
 
     <!-- Firebase Script -->
     <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
-        authDomain: "wkd-edtech-app.firebaseapp.com",
-        projectId: "wkd-edtech-app",
-        storageBucket: "wkd-edtech-app.appspot.com",
-        messagingSenderId: "45418311366",
-        appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
+            authDomain: "wkd-edtech-app.firebaseapp.com",
+            projectId: "wkd-edtech-app",
+            storageBucket: "wkd-edtech-app.appspot.com",
+            messagingSenderId: "45418311366",
+            appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-    // লগইন করা ইউজারের ডাটা আনা
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            // ইউজারের UID দিয়ে ডাটাবেসে সার্চ করা
-            const docRef = doc(db, "Users", user.uid);
-            
-            try {
-                const docSnap = await getDoc(docRef);
+        // লগইন স্টেট চেক করা
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // ইউজার লগইন করা আছে
+                const docRef = doc(db, "Users", user.uid);
+                
+                try {
+                    const docSnap = await getDoc(docRef);
 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    
-                    // নাম না থাকলে ইমেইল দেখাবে
-                    let displayName = data.name || user.email.split('@')[0]; 
-                    
-                    document.getElementById('student-name').innerText = displayName;
-                    document.getElementById('avatar').innerText = displayName.charAt(0).toUpperCase();
-                    document.getElementById('student-class').innerText = data.class || "N/A";
-                    document.getElementById('math-score').innerText = data.mathScore || "0";
-                    document.getElementById('attendance-score').innerText = data.attendance || "0";
-                } else {
-                    // যদি ডাটা না থাকে (নতুন ইউজার)
-                    document.getElementById('student-name').innerText = user.email.split('@')[0];
-                    document.getElementById('avatar').innerText = user.email.charAt(0).toUpperCase();
-                    document.getElementById('student-class').innerText = "অনির্ধারিত";
-                    document.getElementById('math-score').innerText = "0";
-                    document.getElementById('attendance-score').innerText = "0";
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        let displayName = data.name || user.email.split('@')[0]; 
+                        
+                        document.getElementById('student-name').innerText = displayName;
+                        document.getElementById('avatar').innerText = displayName.charAt(0).toUpperCase();
+                        document.getElementById('student-class').innerText = data.class || "অনির্ধারিত";
+                        document.getElementById('math-score').innerText = data.mathScore || "0";
+                        document.getElementById('attendance-score').innerText = data.attendance || "0";
+                    } else {
+                        // ডাটাবেসে ডাটা নেই, কিন্তু ইউজার লগইন করা আছে
+                        document.getElementById('student-name').innerText = user.email.split('@')[0];
+                        document.getElementById('avatar').innerText = user.email.charAt(0).toUpperCase();
+                        document.getElementById('student-class').innerText = "অনির্ধারিত";
+                        document.getElementById('math-score').innerText = "0";
+                        document.getElementById('attendance-score').innerText = "0";
+                    }
+                } catch (error) {
+                    console.error("Error getting document:", error);
+                    document.getElementById('student-name').innerText = "ডাটা লোডে সমস্যা";
                 }
-            } catch (error) {
-                console.error("Error getting document:", error);
+            } else {
+                // ইউজার লগইন করা নেই, লগইন পেজে পাঠাবে
+                window.location.href = "login.html";
             }
-        } else {
-            window.location.href = "login.html"; // লগইন না থাকলে বের করে দেবে
-        }
-    });
+        });
     </script>
 </body>
 </html>
