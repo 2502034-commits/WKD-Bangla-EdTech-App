@@ -42,49 +42,45 @@
         </div>
     </div>
 
-    <!-- Firebase Script -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+   <!-- Firebase Script -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
-            authDomain: "wkd-edtech-app.firebaseapp.com",
-            projectId: "wkd-edtech-app",
-            storageBucket: "wkd-edtech-app.appspot.com",
-            messagingSenderId: "45418311366",
-            appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
+        authDomain: "wkd-edtech-app.firebaseapp.com",
+        projectId: "wkd-edtech-app",
+        storageBucket: "wkd-edtech-app.appspot.com",
+        messagingSenderId: "45418311366",
+        appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-// ⚠️ লগইন সেশন ব্রাউজারে সেভ রাখার জন্য এই অংশটি যোগ করা হলো ⚠️
-setPersistence(auth, browserLocalPersistence)
-  .then(() => {
-    console.log("Persistence set to Local");
-  })
-  .catch((error) => {
-    console.error("Error setting persistence:", error);
-  });
-        const db = getFirestore(app);
-
-        // ডিবাগ মেসেজ দেখানোর ফাংশন
-        function showDebugMessage(msg, isError = false) {
-            const debugDiv = document.getElementById('debug-message');
-            debugDiv.classList.remove('hidden');
-            debugDiv.innerText = msg;
-            if (isError) {
-                debugDiv.className = "p-4 m-4 text-center font-bold text-lg rounded-lg bg-red-100 text-red-700 border border-red-400";
-            } else {
-                debugDiv.className = "p-4 m-4 text-center font-bold text-lg rounded-lg bg-green-100 text-green-700 border border-green-400";
-            }
+    // ডিবাগ মেসেজ দেখানোর ফাংশন
+    function showDebugMessage(msg, isError = false) {
+        const debugDiv = document.getElementById('debug-message');
+        debugDiv.classList.remove('hidden');
+        debugDiv.innerText = msg;
+        if (isError) {
+            debugDiv.className = "p-4 m-4 text-center font-bold text-lg rounded-lg bg-red-100 text-red-700 border border-red-400";
+        } else {
+            debugDiv.className = "p-4 m-4 text-center font-bold text-lg rounded-lg bg-green-100 text-green-700 border border-green-400";
         }
+    }
 
+    // ১. প্রথমে সেশন সেভ করার সেটিংস নিশ্চিত করি
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        console.log("Persistence set successfully");
+        
+        // ২. সেটিংস নিশ্চিত হওয়ার পরেই ইউজার চেক করি
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // ইউজার পাওয়া গেছে
                 showDebugMessage("সফলভাবে লগইন করা আছে: " + user.email);
                 
                 let displayName = user.email.split('@')[0];
@@ -105,20 +101,21 @@ setPersistence(auth, browserLocalPersistence)
                         document.getElementById('math-score').innerText = data.mathScore || "0";
                         document.getElementById('attendance-score').innerText = data.attendance || "0";
                     } else {
-                        // ডাটাবেসে ডাটা নেই, কিন্তু লগইন আছে
                         document.getElementById('student-class').innerText = "৯ম";
                     }
                 } catch (error) {
                     showDebugMessage("ডাটাবেস থেকে ডাটা আনতে সমস্যা হচ্ছে!", true);
-                    console.error(error);
                 }
             } else {
-                // ইউজার লগইন করা নেই! এবার আমরা রিডাইরেক্ট করব না, শুধু মেসেজ দেখাব।
-                showDebugMessage("সমস্যা: আপনি লগইন করা নেই! দয়া করে ড্যাশবোর্ডে ফিরে গিয়ে আবার লগইন করুন। (এখানে অটো রিডাইরেক্ট বন্ধ রাখা হয়েছে)", true);
+                showDebugMessage("সমস্যা: আপনি লগইন করা নেই! দয়া করে ড্যাশবোর্ডে ফিরে গিয়ে আবার লগইন করুন।", true);
                 document.getElementById('student-name').innerText = "লগইন নেই";
                 document.getElementById('student-class').innerText = "-";
             }
         });
-    </script>
+      })
+      .catch((error) => {
+        showDebugMessage("সেশন সেটআপে সমস্যা: " + error.message, true);
+      });
+                           </script> 
 </body>
 </html>
