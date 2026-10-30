@@ -57,59 +57,66 @@
     </div>
 
     <!-- Firebase Script -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    <!-- Firebase Script -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
-            authDomain: "wkd-edtech-app.firebaseapp.com",
-            projectId: "wkd-edtech-app",
-            storageBucket: "wkd-edtech-app.appspot.com",
-            messagingSenderId: "45418311366",
-            appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
+        authDomain: "wkd-edtech-app.firebaseapp.com",
+        projectId: "wkd-edtech-app",
+        storageBucket: "wkd-edtech-app.appspot.com",
+        messagingSenderId: "45418311366",
+        appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        // লগইন স্টেট চেক করা
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                // ইউজার লগইন করা আছে
-                const docRef = doc(db, "Users", user.uid);
-                
-                try {
-                    const docSnap = await getDoc(docRef);
+    // স্ক্রিনে 'লোড হচ্ছে' দেখানোর জন্য
+    document.getElementById('student-name').innerText = "লোড হচ্ছে...";
 
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        let displayName = data.name || user.email.split('@')[0]; 
-                        
-                        document.getElementById('student-name').innerText = displayName;
-                        document.getElementById('avatar').innerText = displayName.charAt(0).toUpperCase();
-                        document.getElementById('student-class').innerText = data.class || "অনির্ধারিত";
-                        document.getElementById('math-score').innerText = data.mathScore || "0";
-                        document.getElementById('attendance-score').innerText = data.attendance || "0";
-                    } else {
-                        // ডাটাবেসে ডাটা নেই, কিন্তু ইউজার লগইন করা আছে
-                        document.getElementById('student-name').innerText = user.email.split('@')[0];
-                        document.getElementById('avatar').innerText = user.email.charAt(0).toUpperCase();
-                        document.getElementById('student-class').innerText = "অনির্ধারিত";
-                        document.getElementById('math-score').innerText = "0";
-                        document.getElementById('attendance-score').innerText = "0";
-                    }
-                } catch (error) {
-                    console.error("Error getting document:", error);
-                    document.getElementById('student-name').innerText = "ডাটা লোডে সমস্যা";
+    // ইউজার লগইন করা আছে কিনা চেক করা
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // ইউজার লগইন করা আছে, ডাটা আনি
+            const docRef = doc(db, "Users", user.uid);
+            
+            try {
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    let displayName = data.name || user.email.split('@')[0]; 
+                    
+                    document.getElementById('student-name').innerText = displayName;
+                    document.getElementById('avatar').innerText = displayName.charAt(0).toUpperCase();
+                    document.getElementById('student-class').innerText = data.class || "অনির্ধারিত";
+                    document.getElementById('math-score').innerText = data.mathScore || "0";
+                    document.getElementById('attendance-score').innerText = data.attendance || "0";
+                } else {
+                    document.getElementById('student-name').innerText = user.email.split('@')[0];
+                    document.getElementById('avatar').innerText = user.email.charAt(0).toUpperCase();
+                    document.getElementById('student-class').innerText = "অনির্ধারিত";
+                    document.getElementById('math-score').innerText = "0";
+                    document.getElementById('attendance-score').innerText = "0";
                 }
-            } else {
-                // ইউজার লগইন করা নেই, লগইন পেজে পাঠাবে
-                window.location.href = "login.html";
+            } catch (error) {
+                console.error("Error getting document:", error);
             }
-        });
-    </script>
+        } else {
+            // ইউজার লগইন করা নেই। 
+            // ২ সেকেন্ড অপেক্ষা করে দেখবে আবার, যদি তাও না থাকে তবেই লগইন পেজে পাঠাবে।
+            setTimeout(() => {
+                if (!auth.currentUser) {
+                    window.location.href = "login.html";
+                }
+            }, 2000); 
+        }
+    });
+</script>
 </body>
 </html>
