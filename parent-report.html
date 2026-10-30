@@ -10,15 +10,16 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
 
-    <!-- হেডার -->
     <nav class="bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center sticky top-0 z-50">
         <h1 class="text-xl font-bold">👨‍👩‍👧 অভিভাবক পোর্টাল</h1>
         <a href="dashboard.html" class="bg-white text-blue-600 px-4 py-1 rounded-full font-semibold text-sm hover:bg-gray-100 transition">ফিরে যান</a>
     </nav>
 
+    <!-- স্ক্রিনে মেসেজ দেখানোর জন্য একটি ডিবাগ এরিয়া -->
+    <div id="debug-message" class="p-4 m-4 text-center font-bold text-lg rounded-lg hidden"></div>
+
     <div class="p-4 max-w-2xl mx-auto mt-6">
         
-        <!-- সন্তানের প্রোফাইল কার্ড -->
         <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100 mb-6 flex items-center space-x-4">
             <div id="avatar" class="bg-blue-100 text-blue-600 rounded-full h-16 w-16 flex items-center justify-center text-2xl font-bold">
                 ...
@@ -29,8 +30,6 @@
             </div>
         </div>
 
-        <!-- অগ্রগতির সারসংক্ষেপ -->
-        <h3 class="text-lg font-bold text-gray-700 mb-3 ml-2">সাপ্তাহিক রিপোর্ট</h3>
         <div class="grid grid-cols-2 gap-4 mb-6">
             <div class="bg-white p-4 rounded-xl shadow border border-gray-100 text-center">
                 <p class="text-gray-500 text-sm mb-1">কুইজের গড় স্কোর</p>
@@ -41,19 +40,6 @@
                 <p class="text-3xl font-bold text-blue-600"><span id="attendance-score">০</span>%</p>
             </div>
         </div>
-
-        <!-- বাকি ডেমো ডাটা -->
-        <h3 class="text-lg font-bold text-gray-700 mb-3 ml-2">সাম্প্রতিক কার্যক্রম</h3>
-        <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden mb-6">
-            <div class="p-4 border-b border-gray-100 flex justify-between items-center">
-                <div>
-                    <p class="font-semibold text-gray-800">সাপ্তাহিক গণিত পরীক্ষা</p>
-                    <p class="text-sm text-gray-500">আজ, সকাল ১০:০০</p>
-                </div>
-                <span class="bg-green-100 text-green-700 font-bold px-3 py-1 rounded-full text-sm">সম্পন্ন</span>
-            </div>
-        </div>
-
     </div>
 
     <!-- Firebase Script -->
@@ -75,12 +61,26 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ড্যাশবোর্ডের মতো একদম সেম লজিক
+        // ডিবাগ মেসেজ দেখানোর ফাংশন
+        function showDebugMessage(msg, isError = false) {
+            const debugDiv = document.getElementById('debug-message');
+            debugDiv.classList.remove('hidden');
+            debugDiv.innerText = msg;
+            if (isError) {
+                debugDiv.className = "p-4 m-4 text-center font-bold text-lg rounded-lg bg-red-100 text-red-700 border border-red-400";
+            } else {
+                debugDiv.className = "p-4 m-4 text-center font-bold text-lg rounded-lg bg-green-100 text-green-700 border border-green-400";
+            }
+        }
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // ইউজার লগইন করা আছে
-                document.getElementById('student-name').innerText = user.email.split('@')[0];
-                document.getElementById('avatar').innerText = user.email.charAt(0).toUpperCase();
+                // ইউজার পাওয়া গেছে
+                showDebugMessage("সফলভাবে লগইন করা আছে: " + user.email);
+                
+                let displayName = user.email.split('@')[0];
+                document.getElementById('student-name').innerText = displayName;
+                document.getElementById('avatar').innerText = displayName.charAt(0).toUpperCase();
                 
                 try {
                     const docRef = doc(db, "Users", user.uid);
@@ -96,17 +96,18 @@
                         document.getElementById('math-score').innerText = data.mathScore || "0";
                         document.getElementById('attendance-score').innerText = data.attendance || "0";
                     } else {
-                        // ডাটাবেসে ডাটা নেই
+                        // ডাটাবেসে ডাটা নেই, কিন্তু লগইন আছে
                         document.getElementById('student-class').innerText = "৯ম";
-                        document.getElementById('math-score').innerText = "0";
-                        document.getElementById('attendance-score').innerText = "0";
                     }
                 } catch (error) {
-                    console.error("Error getting document:", error);
+                    showDebugMessage("ডাটাবেস থেকে ডাটা আনতে সমস্যা হচ্ছে!", true);
+                    console.error(error);
                 }
             } else {
-                // ইউজার লগইন করা নেই
-                window.location.replace("login.html");
+                // ইউজার লগইন করা নেই! এবার আমরা রিডাইরেক্ট করব না, শুধু মেসেজ দেখাব।
+                showDebugMessage("সমস্যা: আপনি লগইন করা নেই! দয়া করে ড্যাশবোর্ডে ফিরে গিয়ে আবার লগইন করুন। (এখানে অটো রিডাইরেক্ট বন্ধ রাখা হয়েছে)", true);
+                document.getElementById('student-name').innerText = "লগইন নেই";
+                document.getElementById('student-class').innerText = "-";
             }
         });
     </script>
