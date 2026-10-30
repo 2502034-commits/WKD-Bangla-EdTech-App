@@ -46,8 +46,7 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         // ⚠️ এখানে আপনার Firebase কনফিগারেশন কোডটি বসান ⚠️
         const firebaseConfig = {
         apiKey: "AIzaSyCb7qgYhkbEex4n5fo280Sv_aFDdvi3WKY",
@@ -60,6 +59,14 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        // লগইন সেশন ব্রাউজারে সেভ রাখার জন্য
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("Persistence set to Local");
+  })
+  .catch((error) => {
+    console.error("Error setting persistence:", error);
+  });
 
         let isLoginMode = true;
         const authForm = document.getElementById('auth-form');
