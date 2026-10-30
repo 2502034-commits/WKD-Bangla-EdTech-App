@@ -16,7 +16,7 @@
     </nav>
 
     <div class="p-6 max-w-4xl mx-auto mt-10 text-center">
-        <h2 class="text-3xl font-bold text-gray-800 mb-4">স্বাগতম, শিক্ষার্থী! 🎓</h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">স্বাগতম, <span id="user-name">শিক্ষার্থী</span>! 🎓</h2>
         <p class="text-gray-600 mb-8">এখান থেকে আপনি আপনার ক্লাস, ভিডিও এবং এআই সলভার ব্যবহার করতে পারবেন।</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -58,10 +58,15 @@
 
         // চেক করা: ইউজার লগইন করা আছে কিনা। না থাকলে লগইন পেজে পাঠাবে।
         onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = "login.html";
-            }
-        });
+    if (user) {
+        // লগইন থাকলে ইউজারের ইমেইলের '@' এর আগের অংশটুকু নাম হিসেবে দেখাবে
+        const name = user.email.split('@')[0];
+        document.getElementById('user-name').innerText = name;
+    } else {
+        // লগইন না থাকলে লগইন পেজে পাঠাবে
+        window.location.href = "login.html";
+    }
+});
 
         // লগআউট বাটন
         document.getElementById('logout-btn').addEventListener('click', () => {
