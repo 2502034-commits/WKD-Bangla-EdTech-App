@@ -42,92 +42,130 @@
 
     </div>
 
-    <script>
-        // কুইজের প্রশ্ন ও উত্তর
-        const quizData = [
-            {
-                question: "২x + ৫ = ১৫ হলে, x এর মান কত?",
-                options: ["৫", "১০", "১৫", "২০"],
-                correct: 0 // ০ ইনডেক্স মানে প্রথম অপশনটি সঠিক
-            },
-            {
-                question: "নিউটনের প্রথম সূত্রকে কী বলা হয়?",
-                options: ["বলের সূত্র", "জড়তার সূত্র", "প্রতিক্রিয়ার সূত্র", "মহাকর্ষ সূত্র"],
-                correct: 1 
-            },
-            {
-                question: "বৃত্তের ক্ষেত্রফলের সূত্র কোনটি?",
-                options: ["২πr", "πr²", "πd", "πr³"],
-                correct: 1 
-            }
-        ];
+    <script type="module">
+    // ফায়ারবেস ইম্পোর্ট
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        let currentQuestion = 0;
-        let score = 0;
+    // আপনার ফায়ারবেস কনফিগ
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
+        authDomain: "wkd-edtech-app.firebaseapp.com",
+        projectId: "wkd-edtech-app",
+        storageBucket: "wkd-edtech-app.appspot.com",
+        messagingSenderId: "45418311366",
+        appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
+    };
 
-        const questionTracker = document.getElementById('question-tracker');
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const scoreDisplay = document.getElementById('score-display');
-        const quizContainer = document.getElementById('quiz-container');
-        const resultContainer = document.getElementById('result-container');
-        const finalScore = document.getElementById('final-score');
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        function loadQuestion() {
-            if (currentQuestion >= quizData.length) {
-                showResult();
-                return;
-            }
+    let currentUser = null;
+    onAuthStateChanged(auth, (user) => {
+        if (user) currentUser = user;
+    });
 
-            const q = quizData[currentQuestion];
-            questionTracker.innerText = `প্রশ্ন ${currentQuestion + 1} / ${quizData.length}`;
-            questionText.innerText = q.question;
-            optionsContainer.innerHTML = '';
+    // কুইজের ডাটা
+    const quizData = [
+        {
+            question: "২x + ৫ = ১৫ হলে, x এর মান কত?",
+            options: ["৫", "১০", "১৫", "২০"],
+            correct: 0 
+        },
+        {
+            question: "নিউটনের প্রথম সূত্রকে কী বলা হয়?",
+            options: ["বলের সূত্র", "জড়তার সূত্র", "প্রতিক্রিয়ার সূত্র", "মহাকর্ষ সূত্র"],
+            correct: 1 
+        },
+        {
+            question: "বৃত্তের ক্ষেত্রফলের সূত্র কোনটি?",
+            options: ["২πr", "πr²", "πd", "πr³"],
+            correct: 1 
+        }
+    ];
 
-            q.options.forEach((option, index) => {
-                const btn = document.createElement('button');
-                btn.innerText = option;
-                btn.className = "w-full text-left px-4 py-3 border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-400 transition font-medium text-gray-700";
-                btn.onclick = () => checkAnswer(index, btn);
-                optionsContainer.appendChild(btn);
-            });
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionTracker = document.getElementById('question-tracker');
+    const questionText = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const scoreDisplay = document.getElementById('score-display');
+    const quizContainer = document.getElementById('quiz-container');
+    const resultContainer = document.getElementById('result-container');
+    const finalScore = document.getElementById('final-score');
+
+    function loadQuestion() {
+        if (currentQuestion >= quizData.length) {
+            showResult();
+            return;
         }
 
-        function checkAnswer(selectedIndex, btnElement) {
-            const q = quizData[currentQuestion];
+        const q = quizData[currentQuestion];
+        questionTracker.innerText = `প্রশ্ন ${currentQuestion + 1} / ${quizData.length}`;
+        questionText.innerText = q.question;
+        optionsContainer.innerHTML = '';
+
+        q.options.forEach((option, index) => {
+            const btn = document.createElement('button');
+            btn.innerText = option;
+            btn.className = "w-full text-left px-4 py-3 border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-400 transition font-medium text-gray-700";
+            btn.onclick = () => checkAnswer(index, btn);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedIndex, btnElement) {
+        const q = quizData[currentQuestion];
+        
+        Array.from(optionsContainer.children).forEach(btn => btn.disabled = true);
+
+        if (selectedIndex === q.correct) {
+            btnElement.classList.remove('hover:bg-blue-50', 'border-gray-300');
+            btnElement.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+            score++;
+            scoreDisplay.innerText = score;
+        } else {
+            btnElement.classList.remove('hover:bg-blue-50', 'border-gray-300');
+            btnElement.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
             
-            // সব বাটন ডিজেবল করে দেওয়া
-            Array.from(optionsContainer.children).forEach(btn => btn.disabled = true);
+            optionsContainer.children[q.correct].classList.remove('border-gray-300');
+            optionsContainer.children[q.correct].classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+        }
 
-            if (selectedIndex === q.correct) {
-                btnElement.classList.remove('hover:bg-blue-50', 'border-gray-300');
-                btnElement.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
-                score++;
-                scoreDisplay.innerText = score;
-            } else {
-                btnElement.classList.remove('hover:bg-blue-50', 'border-gray-300');
-                btnElement.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
-                
-                // সঠিক উত্তরটি সবুজ করে দেখানো
-                optionsContainer.children[q.correct].classList.remove('border-gray-300');
-                optionsContainer.children[q.correct].classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+        setTimeout(() => {
+            currentQuestion++;
+            loadQuestion();
+        }, 1000);
+    }
+
+    // রেজাল্ট দেখানো এবং ডাটাবেসে সেভ করা
+    async function showResult() {
+        quizContainer.classList.add('hidden');
+        resultContainer.classList.remove('hidden');
+        
+        // স্কোরকে পার্সেন্টেজে রূপান্তর (যেমন ৩টির মধ্যে ২টি সঠিক হলে ৬৬%)
+        let percentage = Math.round((score / quizData.length) * 100);
+        finalScore.innerText = percentage;
+
+        // ফায়ারবেসে স্কোর সেভ করা
+        if (currentUser) {
+            try {
+                await setDoc(doc(db, "Users", currentUser.uid), {
+                    mathScore: percentage,
+                    name: currentUser.email.split('@')[0],
+                    class: "৯ম" // আপাতত ডিফল্ট, পরে প্রোফাইল থেকে আসবে
+                }, { merge: true }); // merge: true মানে আগের ডাটা থাকলে মুছবে না, শুধু আপডেট করবে
+                console.log("Score saved successfully!");
+            } catch (e) {
+                console.error("Error saving score: ", e);
             }
-
-            // ১ সেকেন্ড পর পরবর্তী প্রশ্নে যাবে
-            setTimeout(() => {
-                currentQuestion++;
-                loadQuestion();
-            }, 1000);
         }
+    }
 
-        function showResult() {
-            quizContainer.classList.add('hidden');
-            resultContainer.classList.remove('hidden');
-            finalScore.innerText = score;
-        }
-
-        // প্রথম প্রশ্ন লোড করা
-        loadQuestion();
+    loadQuestion();
     </script>
 </body>
 </html>
