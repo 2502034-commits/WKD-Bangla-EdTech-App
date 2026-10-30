@@ -59,7 +59,6 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        // লগইন সেশন ব্রাউজারে সেভ রাখার জন্য
 setPersistence(auth, browserLocalPersistence)
   .then(() => {
     console.log("Persistence set to Local");
