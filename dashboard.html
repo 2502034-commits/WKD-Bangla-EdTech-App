@@ -56,24 +56,24 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // চেক করা: ইউজার লগইন করা আছে কিনা। না থাকলে লগইন পেজে পাঠাবে।
-        onAuthStateChanged(auth, (user) => {
+        // চেক করা: ইউজার লগইন করা আছে কিনা
+onAuthStateChanged(auth, (user) => {
     if (user) {
-        // লগইন থাকলে ইউজারের ইমেইলের '@' এর আগের অংশটুকু নাম হিসেবে দেখাবে
+        // ইউজার লগইন করা আছে
         const name = user.email.split('@')[0];
         document.getElementById('user-name').innerText = name;
-    } 
-    // অভিভাবক রিপোর্ট লিংকের সাথে ইউজারের UID যুক্ত করা
-const reportBtn = document.getElementById('report-btn');
-if (reportBtn) {
-    reportBtn.href = "parent-report.html?uid=" + user.uid;
-}
-    else {
-        // লগইন না থাকলে লগইন পেজে পাঠাবে
+        
+        // ⚠️ অভিভাবক রিপোর্টের লিংকের সাথে UID যুক্ত করা (এটি if(user) এর ভেতরে হবে)
+        const reportBtn = document.getElementById('report-btn');
+        if (reportBtn) {
+            reportBtn.href = "parent-report.html?uid=" + user.uid;
+        }
+        
+    } else {
+        // ইউজার লগইন করা নেই, লগইন পেজে পাঠাবে
         window.location.href = "login.html";
     }
 });
-
         // লগআউট বাটন
         document.getElementById('logout-btn').addEventListener('click', () => {
             signOut(auth).then(() => {
