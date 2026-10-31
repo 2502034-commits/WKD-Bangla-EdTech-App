@@ -62,7 +62,13 @@
         // লগইন থাকলে ইউজারের ইমেইলের '@' এর আগের অংশটুকু নাম হিসেবে দেখাবে
         const name = user.email.split('@')[0];
         document.getElementById('user-name').innerText = name;
-    } else {
+    } 
+    // অভিভাবক রিপোর্ট লিংকের সাথে ইউজারের UID যুক্ত করা
+const reportBtn = document.getElementById('report-btn');
+if (reportBtn) {
+    reportBtn.href = "parent-report.html?uid=" + user.uid;
+}
+    else {
         // লগইন না থাকলে লগইন পেজে পাঠাবে
         window.location.href = "login.html";
     }
