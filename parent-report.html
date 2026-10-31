@@ -15,7 +15,7 @@
         <a href="dashboard.html" class="bg-white text-blue-600 px-4 py-1 rounded-full font-semibold text-sm hover:bg-gray-100 transition">ফিরে যান</a>
     </nav>
 
-    <!-- স্ক্রিনে মেসেজ দেখানোর জন্য একটি ডিবাগ এরিয়া -->
+    <!-- এরর মেসেজ দেখানোর জায়গা -->
     <div id="debug-message" class="p-4 m-4 text-center font-bold text-lg rounded-lg hidden"></div>
 
     <div class="p-4 max-w-2xl mx-auto mt-6">
@@ -30,6 +30,7 @@
             </div>
         </div>
 
+        <h3 class="text-lg font-bold text-gray-700 mb-3 ml-2">সাপ্তাহিক রিপোর্ট</h3>
         <div class="grid grid-cols-2 gap-4 mb-6">
             <div class="bg-white p-4 rounded-xl shadow border border-gray-100 text-center">
                 <p class="text-gray-500 text-sm mb-1">কুইজের গড় স্কোর</p>
@@ -40,74 +41,76 @@
                 <p class="text-3xl font-bold text-blue-600"><span id="attendance-score">০</span>%</p>
             </div>
         </div>
+
+        <h3 class="text-lg font-bold text-gray-700 mb-3 ml-2">সাম্প্রতিক কার্যক্রম</h3>
+        <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden mb-6">
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                <div>
+                    <p class="font-semibold text-gray-800">সাপ্তাহিক গণিত পরীক্ষা</p>
+                    <p class="text-sm text-gray-500">আজ, সকাল ১০:০০</p>
+                </div>
+                <span class="bg-green-100 text-green-700 font-bold px-3 py-1 rounded-full text-sm">সম্পন্ন</span>
+            </div>
+        </div>
+
     </div>
 
-   <!-- Firebase Script -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    <!-- Firebase Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
-        authDomain: "wkd-edtech-app.firebaseapp.com",
-        projectId: "wkd-edtech-app",
-        storageBucket: "wkd-edtech-app.appspot.com",
-        messagingSenderId: "45418311366",
-        appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
+            authDomain: "wkd-edtech-app.firebaseapp.com",
+            projectId: "wkd-edtech-app",
+            storageBucket: "wkd-edtech-app.appspot.com",
+            messagingSenderId: "45418311366",
+            appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    // ডাটা লোড করার ফাংশন
-    async function loadStudentData(uid, email = "") {
-        try {
+        // ব্রাউজারের মেমোরি থেকে UID ও নাম নেওয়া
+        const uid = localStorage.getItem('currentUserId');
+        const localName = localStorage.getItem('currentUserName');
+
+        if (uid) {
+            // UID পাওয়া গেছে, ডাটাবেস থেকে ডাটা আনি
             const docRef = doc(db, "Users", uid);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                let displayName = data.name || (email ? email.split('@')[0] : "শিক্ষার্থী");
-                
-                document.getElementById('student-name').innerText = displayName;
-                document.getElementById('avatar').innerText = displayName.charAt(0).toUpperCase();
-                document.getElementById('student-class').innerText = data.class || "৯ম";
-                document.getElementById('math-score').innerText = data.mathScore || "0";
-                document.getElementById('attendance-score').innerText = data.attendance || "0";
-            } else {
-                document.getElementById('student-name').innerText = "নতুন শিক্ষার্থী";
-                document.getElementById('student-class').innerText = "৯ম";
-            }
-        } catch (error) {
-            console.error("Error getting document:", error);
+            
+            getDoc(docRef).then((docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    let displayName = data.name || localName || "শিক্ষার্থী";
+                    
+                    document.getElementById('student-name').innerText = displayName;
+                    document.getElementById('avatar').innerText = displayName.charAt(0).toUpperCase();
+                    document.getElementById('student-class').innerText = data.class || "৯ম";
+                    document.getElementById('math-score').innerText = data.mathScore || "0";
+                    document.getElementById('attendance-score').innerText = data.attendance || "0";
+                } else {
+                    // ডাটাবেসে ডাটা নেই, কিন্তু ইউজার লগইন করা আছে
+                    document.getElementById('student-name').innerText = localName;
+                    document.getElementById('avatar').innerText = localName.charAt(0).toUpperCase();
+                    document.getElementById('student-class').innerText = "৯ম";
+                    document.getElementById('math-score').innerText = "0";
+                    document.getElementById('attendance-score').innerText = "0";
+                }
+            }).catch((error) => {
+                console.error("Error getting document:", error);
+            });
+        } else {
+            // UID নেই, লাল বক্স দেখাও
+            document.getElementById('student-name').innerText = "লগইন নেই";
+            document.getElementById('student-class').innerText = "-";
+            
+            const debugDiv = document.getElementById('debug-message');
+            debugDiv.classList.remove('hidden');
+            debugDiv.innerText = "সমস্যা: অনুগ্রহ করে প্রথমে ড্যাশবোর্ড থেকে লগইন করুন।";
+            debugDiv.className = "p-4 m-4 text-center font-bold text-lg rounded-lg bg-red-100 text-red-700 border border-red-400";
         }
-    }
-
-    // ১. প্রথমে চেক করব লিংকে (URL-এ) কোনো UID আছে কিনা
-    const urlParams = new URLSearchParams(window.location.search);
-    const uidFromUrl = urlParams.get('uid');
-
-    if (uidFromUrl) {
-        // লিংকে UID আছে, সরাসরি ডাটা লোড করি
-        loadStudentData(uidFromUrl);
-    } else {
-        // লিংকে UID নেই, ফায়ারবেস চেক করি
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loadStudentData(user.uid, user.email);
-            } else {
-                document.getElementById('student-name').innerText = "লগইন নেই";
-                document.getElementById('student-class').innerText = "-";
-                
-                const debugDiv = document.getElementById('debug-message');
-                debugDiv.classList.remove('hidden');
-                debugDiv.innerText = "সমস্যা: আপনি লগইন করা নেই! দয়া করে ড্যাশবোর্ডে ফিরে গিয়ে আবার লগইন করুন।";
-                debugDiv.className = "p-4 m-4 text-center font-bold text-lg rounded-lg bg-red-100 text-red-700 border border-red-400";
-            }
-        });
-    }
-</script>
+    </script>
 </body>
 </html>
