@@ -43,10 +43,9 @@
     </div>
 
    <!-- Firebase Script -->
-<!-- Firebase Script -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -62,46 +61,53 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // ১ সেকেন্ড অপেক্ষা করে চেক করব, যাতে ফায়ারবেস সেশন লোড হতে সময় পায়
-    setTimeout(async () => {
-        const user = auth.currentUser;
+    // ডাটা লোড করার ফাংশন
+    async function loadStudentData(uid, email = "") {
+        try {
+            const docRef = doc(db, "Users", uid);
+            const docSnap = await getDoc(docRef);
 
-        if (user) {
-            // ইউজার লগইন করা আছে
-            let displayName = user.email.split('@')[0];
-            document.getElementById('student-name').innerText = displayName;
-            document.getElementById('avatar').innerText = displayName.charAt(0).toUpperCase();
-            
-            try {
-                const docRef = doc(db, "Users", user.uid);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    if(data.name) {
-                        document.getElementById('student-name').innerText = data.name;
-                        document.getElementById('avatar').innerText = data.name.charAt(0).toUpperCase();
-                    }
-                    document.getElementById('student-class').innerText = data.class || "৯ম";
-                    document.getElementById('math-score').innerText = data.mathScore || "0";
-                    document.getElementById('attendance-score').innerText = data.attendance || "0";
-                } else {
-                    document.getElementById('student-class').innerText = "৯ম";
-                }
-            } catch (error) {
-                console.error(error);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                let displayName = data.name || (email ? email.split('@')[0] : "শিক্ষার্থী");
+                
+                document.getElementById('student-name').innerText = displayName;
+                document.getElementById('avatar').innerText = displayName.charAt(0).toUpperCase();
+                document.getElementById('student-class').innerText = data.class || "৯ম";
+                document.getElementById('math-score').innerText = data.mathScore || "0";
+                document.getElementById('attendance-score').innerText = data.attendance || "0";
+            } else {
+                document.getElementById('student-name').innerText = "নতুন শিক্ষার্থী";
+                document.getElementById('student-class').innerText = "৯ম";
             }
-        } else {
-            // ইউজার লগইন করা নেই
-            document.getElementById('student-name').innerText = "লগইন নেই";
-            document.getElementById('student-class').innerText = "-";
-            
-            const debugDiv = document.getElementById('debug-message');
-            debugDiv.classList.remove('hidden');
-            debugDiv.innerText = "সমস্যা: আপনি লগইন করা নেই! দয়া করে ড্যাশবোর্ডে ফিরে গিয়ে আবার লগইন করুন।";
-            debugDiv.className = "p-4 m-4 text-center font-bold text-lg rounded-lg bg-red-100 text-red-700 border border-red-400";
+        } catch (error) {
+            console.error("Error getting document:", error);
         }
-    }, 1000); // ১০০০ মিলিসেকেন্ড = ১ সেকেন্ড
+    }
+
+    // ১. প্রথমে চেক করব লিংকে (URL-এ) কোনো UID আছে কিনা
+    const urlParams = new URLSearchParams(window.location.search);
+    const uidFromUrl = urlParams.get('uid');
+
+    if (uidFromUrl) {
+        // লিংকে UID আছে, সরাসরি ডাটা লোড করি
+        loadStudentData(uidFromUrl);
+    } else {
+        // লিংকে UID নেই, ফায়ারবেস চেক করি
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loadStudentData(user.uid, user.email);
+            } else {
+                document.getElementById('student-name').innerText = "লগইন নেই";
+                document.getElementById('student-class').innerText = "-";
+                
+                const debugDiv = document.getElementById('debug-message');
+                debugDiv.classList.remove('hidden');
+                debugDiv.innerText = "সমস্যা: আপনি লগইন করা নেই! দয়া করে ড্যাশবোর্ডে ফিরে গিয়ে আবার লগইন করুন।";
+                debugDiv.className = "p-4 m-4 text-center font-bold text-lg rounded-lg bg-red-100 text-red-700 border border-red-400";
+            }
+        });
+    }
 </script>
 </body>
 </html>
