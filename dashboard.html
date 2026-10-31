@@ -21,20 +21,23 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <a href="video.html" class="block bg-white p-6 rounded-xl shadow border border-gray-100 hover:shadow-lg transition cursor-pointer">
-               <h3 class="text-xl font-bold text-blue-600 mb-2">🎬 আজকের লেসন</h3>
-               <p class="text-gray-600">নিউটনের গতিসূত্র - ভিডিও দেখতে এখানে ক্লিক করুন।</p>
+                <h3 class="text-xl font-bold text-blue-600 mb-2">🎬 আজকের লেসন</h3>
+                <p class="text-gray-600">নিউটনের গতিসূত্র - ভিডিও দেখতে এখানে ক্লিক করুন।</p>
             </a>
+            
             <a href="quiz.html" class="block bg-white p-6 rounded-xl shadow border border-gray-100 hover:shadow-lg transition cursor-pointer">
-    <h3 class="text-xl font-bold text-blue-600 mb-2">📝 সাপ্তাহিক পরীক্ষা</h3>
-    <p class="text-gray-600">এই সপ্তাহের কুইজে অংশ নিন।</p>
+                <h3 class="text-xl font-bold text-blue-600 mb-2">📝 সাপ্তাহিক পরীক্ষা</h3>
+                <p class="text-gray-600">এই সপ্তাহের কুইজে অংশ নিন।</p>
             </a>
+            
             <a href="math-solver.html" class="block bg-white p-6 rounded-xl shadow border border-gray-100 hover:shadow-lg transition cursor-pointer">
                 <h3 class="text-xl font-bold text-blue-600 mb-2">🤖 AI ম্যাথ সলভার</h3>
                 <p class="text-gray-600">অংক বুঝতে সমস্যা? এআই-এর কাছে জিজ্ঞেস করুন।</p>
             </a>
-            <a href="parent-report.html" id="report-btn" class="block bg-white p-6 rounded-xl shadow border border-gray-100 hover:shadow-lg transition cursor-pointer">
-    <h3 class="text-xl font-bold text-blue-600 mb-2">👨‍👩‍👧 অভিভাবক রিপোর্ট</h3>
-    <p class="text-gray-600">সন্তানের অগ্রগতির রিপোর্ট দেখতে ক্লিক করুন।</p>
+            
+            <a href="parent-report.html" class="block bg-white p-6 rounded-xl shadow border border-gray-100 hover:shadow-lg transition cursor-pointer">
+                <h3 class="text-xl font-bold text-blue-600 mb-2">👨‍👩‍👧 অভিভাবক রিপোর্ট</h3>
+                <p class="text-gray-600">সন্তানের অগ্রগতির রিপোর্ট দেখতে ক্লিক করুন।</p>
             </a>
         </div>
     </div>
@@ -43,37 +46,36 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // ⚠️ এখানে আপনার Firebase কনফিগারেশন কোডটি বসান (যেটি login.html-এ দিয়েছেন) ⚠️
         const firebaseConfig = {
-            apiKey: "AIzaSyCb7qgYhkbEex4n5fo280Sv_aFDdvi3WKY",
-            authDomain: "wkd-edtech-app.firebaseapp.com",
-            projectId: "wkd-edtech-app",
-            storageBucket: "wkd-edtech-app.firebasestorage.app",
-            messagingSenderId: "454183111366",
-            appId: "1:454183111366:web:1999d23b19bebde1fe65c7"
+            apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
+            authDomain: "wkd-edtech-app.firebaseapp.com",
+            projectId: "wkd-edtech-app",
+            storageBucket: "wkd-edtech-app.appspot.com",
+            messagingSenderId: "45418311366",
+            appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // চেক করা: ইউজার লগইন করা আছে কিনা
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        const name = user.email.split('@')[0];
-        document.getElementById('user-name').innerText = name;
-        
-        // ⚠️ সরাসরি UID লিংকে যুক্ত করা
-        const reportBtn = document.getElementById('report-btn');
-        if (reportBtn) {
-            reportBtn.href = "parent-report.html?uid=" + user.uid;
-        }
-    } else {
-        window.location.href = "login.html";
-    }
-});
-        // লগআউট বাটন
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const name = user.email.split('@')[0];
+                document.getElementById('user-name').innerText = name;
+                
+                // ⚠️ ইউজারের UID এবং নাম ব্রাউজারের মেমোরিতে সেভ করে রাখা
+                localStorage.setItem('currentUserId', user.uid);
+                localStorage.setItem('currentUserName', name);
+
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
         document.getElementById('logout-btn').addEventListener('click', () => {
             signOut(auth).then(() => {
+                localStorage.removeItem('currentUserId');
+                localStorage.removeItem('currentUserName');
                 window.location.href = "login.html";
             });
         });
