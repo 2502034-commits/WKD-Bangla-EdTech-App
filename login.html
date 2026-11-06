@@ -44,82 +44,86 @@
     </div>
 
     <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        // ⚠️ এখানে আপনার Firebase কনফিগারেশন কোডটি বসান ⚠️
-        const firebaseConfig = {
-        apiKey: "AIzaSyCb7qgYhkbEex4n5fo280Sv_aFDdvi3WKY",
-        authDomain: "wkd-edtech-app.firebaseapp.com",
-        projectId: "wkd-edtech-app",
-        storageBucket: "wkd-edtech-app.firebasestorage.app",
-        messagingSenderId: "454183111366",
-        appId: "1:454183111366:web:1999d23b19bebde1fe65c7"
-        };
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-setPersistence(auth, browserLocalPersistence)
-  .then(() => {
-    console.log("Persistence set to Local");
-  })
-  .catch((error) => {
-    console.error("Error setting persistence:", error);
-  });
+    // আপনার Firebase কনফিগ
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
+        authDomain: "wkd-edtech-app.firebaseapp.com",
+        projectId: "wkd-edtech-app",
+        storageBucket: "wkd-edtech-app.appspot.com",
+        messagingSenderId: "45418311366",
+        appId: "1:45418311366:web:1999d23b19bebde1fe65c7"
+    };
 
-        let isLoginMode = true;
-        const authForm = document.getElementById('auth-form');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const submitBtn = document.getElementById('submit-btn');
-        const toggleBtn = document.getElementById('toggle-btn');
-        const formTitle = document.getElementById('form-title');
-        const toggleText = document.getElementById('toggle-text');
-        const errorMsg = document.getElementById('error-msg');
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-        // টগল বাটন ক্লিক করলে লগইন থেকে রেজিস্ট্রেশন মোডে যাবে
-        toggleBtn.addEventListener('click', () => {
-            isLoginMode = !isLoginMode;
-            errorMsg.classList.add('hidden');
-            if(isLoginMode) {
-                formTitle.innerText = "আপনার অ্যাকাউন্টে লগইন করুন";
-                submitBtn.innerText = "লগইন করুন";
-                toggleText.innerText = "নতুন? ";
-                toggleBtn.innerText = "রেজিস্ট্রেশন করুন";
+    // সেশন সেভ রাখার নির্দেশ
+    setPersistence(auth, browserLocalPersistence);
+
+    let isLoginMode = true;
+    const authForm = document.getElementById('auth-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const submitBtn = document.getElementById('submit-btn');
+    const toggleBtn = document.getElementById('toggle-btn');
+    const formTitle = document.getElementById('form-title');
+    const toggleText = document.getElementById('toggle-text');
+    const errorMsg = document.getElementById('error-msg');
+
+    // টগল বাটন (লগইন / রেজিস্ট্রেশন)
+    toggleBtn.addEventListener('click', () => {
+        isLoginMode = !isLoginMode;
+        errorMsg.classList.add('hidden');
+        if(isLoginMode) {
+            formTitle.innerText = "আপনার অ্যাকাউন্টে লগইন করুন";
+            submitBtn.innerText = "লগইন করুন";
+            toggleText.innerText = "নতুন? ";
+            toggleBtn.innerText = "রেজিস্ট্রেশন করুন";
+        } else {
+            formTitle.innerText = "নতুন অ্যাকাউন্ট তৈরি করুন";
+            submitBtn.innerText = "রেজিস্ট্রেশন করুন";
+            toggleText.innerText = "অ্যাকাউন্ট আছে? ";
+            toggleBtn.innerText = "লগইন করুন";
+        }
+    });
+
+    // ফর্ম সাবমিট
+    authForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        
+        submitBtn.innerText = "অপেক্ষা করুন...";
+        submitBtn.disabled = true;
+        errorMsg.classList.add('hidden');
+
+        try {
+            if (isLoginMode) {
+                // লগইন
+                await signInWithEmailAndPassword(auth, email, password);
             } else {
-                formTitle.innerText = "নতুন অ্যাকাউন্ট তৈরি করুন";
-                submitBtn.innerText = "রেজিস্ট্রেশন করুন";
-                toggleText.innerText = "অ্যাকাউন্ট আছে? ";
-                toggleBtn.innerText = "লগইন করুন";
+                // রেজিস্ট্রেশন
+                await createUserWithEmailAndPassword(auth, email, password);
             }
-        });
+            
+            // ⚠️ সফল হলে ১ সেকেন্ড অপেক্ষা করে ড্যাশবোর্ডে পাঠাবে
+            submitBtn.innerText = "সফল হয়েছে! যাচ্ছে...";
+            setTimeout(() => {
+                window.location.replace("dashboard.html"); // replace ব্যবহার করলে ব্যাক করে লগইনে আসা যাবে না
+            }, 1000);
 
-        // ফর্ম সাবমিট করলে
-        authForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            submitBtn.innerText = "অপেক্ষা করুন...";
-            submitBtn.disabled = true;
-            errorMsg.classList.add('hidden');
+        } catch (error) {
+            errorMsg.innerText = "সমস্যা হয়েছে: " + error.message;
+            errorMsg.classList.remove('hidden');
+            submitBtn.innerText = isLoginMode ? "লগইন করুন" : "রেজিস্ট্রেশন করুন";
+            submitBtn.disabled = false;
+        }
+    });
+</script>
 
-            try {
-                if (isLoginMode) {
-                    // লগইন
-                    await signInWithEmailAndPassword(auth, email, password);
-                } else {
-                    // রেজিস্ট্রেশন
-                    await createUserWithEmailAndPassword(auth, email, password);
-                }
-                // সফল হলে ড্যাশবোর্ডে পাঠাবে
-                window.location.href = "dashboard.html";
-            } catch (error) {
-                errorMsg.innerText = "সমস্যা হয়েছে: " + error.message;
-                errorMsg.classList.remove('hidden');
-                submitBtn.innerText = isLoginMode ? "লগইন করুন" : "রেজিস্ট্রেশন করুন";
-                submitBtn.disabled = false;
-            }
-        });
-    </script>
 </body>
 </html>
