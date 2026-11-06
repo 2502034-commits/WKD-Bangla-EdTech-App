@@ -6,9 +6,7 @@
     <title>লগইন - WKD EdTech</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-    <style> 
-        body { font-family: 'Hind Siliguri', sans-serif; } 
-    </style>
+    <style> body { font-family: 'Hind Siliguri', sans-serif; } </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
 
@@ -18,7 +16,6 @@
             <p id="form-title" class="text-gray-500 mt-2">আপনার অ্যাকাউন্টে লগইন করুন</p>
         </div>
 
-        <!-- এরর মেসেজ দেখানোর জায়গা -->
         <div id="error-msg" class="bg-red-100 text-red-700 p-3 rounded mb-4 hidden text-sm"></div>
 
         <form id="auth-form">
@@ -46,14 +43,12 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // আপনার Firebase কনফিগ
         const firebaseConfig = {
-            apiKey: "AIzaSyCb7qgYhkbEex4n5fo280Sv_aFDdvi3WKY",
+            apiKey: "AIzaSyC7qYnhkbEex4n5foZ8Ov_aFDdv13WKY",
             authDomain: "wkd-edtech-app.firebaseapp.com",
             projectId: "wkd-edtech-app",
             storageBucket: "wkd-edtech-app.appspot.com",
@@ -63,12 +58,6 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-
-        // ⚠️ সেশন ব্রাউজারে সেভ রাখার নির্দেশ (এটি ছাড়া পেজ চেঞ্জ হলে লগআউট হয়ে যাবে)
-        setPersistence(auth, browserLocalPersistence)
-            .catch((error) => {
-                console.error("Persistence error:", error);
-            });
 
         let isLoginMode = true;
         const authForm = document.getElementById('auth-form');
@@ -80,7 +69,6 @@
         const toggleText = document.getElementById('toggle-text');
         const errorMsg = document.getElementById('error-msg');
 
-        // টগল বাটন (লগইন থেকে রেজিস্ট্রেশন)
         toggleBtn.addEventListener('click', () => {
             isLoginMode = !isLoginMode;
             errorMsg.classList.add('hidden');
@@ -97,7 +85,6 @@
             }
         });
 
-        // ফর্ম সাবমিট
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = emailInput.value;
@@ -109,19 +96,11 @@
 
             try {
                 if (isLoginMode) {
-                    // লগইন
                     await signInWithEmailAndPassword(auth, email, password);
                 } else {
-                    // রেজিস্ট্রেশন
                     await createUserWithEmailAndPassword(auth, email, password);
                 }
-                
-                // ⚠️ লগইন সফল হলে ১ সেকেন্ড অপেক্ষা করে ড্যাশবোর্ডে পাঠাবে
-                submitBtn.innerText = "সফল হয়েছে! অপেক্ষা করুন...";
-                setTimeout(() => {
-                    window.location.replace("dashboard.html"); 
-                }, 1000);
-
+                window.location.href = "dashboard.html"; // লগইন সফল হলে ড্যাশবোর্ডে যাবে
             } catch (error) {
                 errorMsg.innerText = "সমস্যা হয়েছে: " + error.message;
                 errorMsg.classList.remove('hidden');
