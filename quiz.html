@@ -78,7 +78,11 @@
         <p class="mb-0">© 2026 WKD Bangla EdTech platform. All rights reserved.</p>
     </footer>
 
-    <script>
+        <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { doc, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
         const quizData = [
             {
                 question: "অভিকর্ষজ ত্বরণ 'g' এর আদর্শ মান কত?",
@@ -98,8 +102,19 @@
         ];
 
         let currentQuestion = 0;
-        let score = parseInt(localStorage.getItem('wkd_quiz_score') || '30');
+        let score = 0;
         let selectedOption = null;
+        let currentUser = null;
+
+        // ইউজার লগইন আছে কিনা চেক করা
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+            } else {
+                // কেউ লগইন করা না থাকলে চাইলে লগইন পেজে পাঠাতে পারেন অথবা গেস্ট হিসেবে রাখতে পারেন
+                console.log("No user logged in, playing as guest.");
+            }
+        });
 
         function loadQuiz() {
             selectedOption = null;
@@ -117,17 +132,16 @@
             document.getElementById('optionsContainer').innerHTML = optionsHTML;
         }
 
-        function selectOption(index, element) {
+        window.selectOption = function(index, element) {
             document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
             element.classList.add('selected');
             selectedOption = index;
             document.getElementById('nextBtn').disabled = false;
         }
 
-        function nextQuestion() {
+        window.nextQuestion = async function() {
             if (selectedOption === quizData[currentQuestion].correct) {
                 score += 10; // সঠিক উত্তরের জন্য ১০ পয়েন্ট যোগ
-                localStorage.setItem('wkd_quiz_score', score);
             }
 
             currentQuestion++;
@@ -137,28 +151,33 @@
                 document.getElementById('quiz-container').classList.add('d-none');
                 document.getElementById('result-container').classList.remove('d-none');
                 document.getElementById('finalScore').innerText = score + ' Pts';
+
+                // যদি ইউজার লগইন করা থাকে, তবে পয়েন্ট সরাসরি ফায়ারবেস Firestore-এ সেভ হবে
+                if (currentUser) {
+                    try {
+                        const userRef = doc(db, "users", currentUser.uid);
+                        await updateDoc(userRef, {
+                            score: increment(score) // আগের স্কোরের সাথে নতুন স্কোর যোগ হবে
+                        });
+                        console.log("Score successfully saved to Firebase!");
+                    } catch (error) {
+                        console.error("Error updating score: ", error);
+                    }
+                }
             }
         }
 
-        function restartQuiz() {
+        window.restartQuiz = function() {
             currentQuestion = 0;
+            score = 0;
             document.getElementById('quiz-container').classList.remove('d-none');
             document.getElementById('result-container').classList.add('d-none');
             loadQuiz();
         }
 
         window.onload = loadQuiz;
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then((reg) => console.log('Service Worker Registered!', reg))
-                    .catch((err) => console.log('Service Worker Failed!', err));
-            });
-        }
-        </script>
+            </script>
+    
     
 </body>
 </html>
