@@ -41,18 +41,15 @@
                 <div class="card quiz-card p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="fw-bold text-primary mb-0"><i class="fa-solid fa-pen-to-square"></i> সাপ্তাহিক অ্যাসেসমেন্ট</h4>
-                        <span class="badge bg-warning text-dark">প্রশ্ন ১ / ৩</span>
+                        <span class="badge bg-warning text-dark" id="question-count">প্রশ্ন ১ / ৩</span>
                     </div>
                     <hr>
-                    <div id="quiz-body">
-                        <h5 class="fw-bold mb-4">প্রশ্ন: নিচের কোনটি নবায়নযোগ্য শক্তির উৎস নয়?</h5>
-                        <div class="d-grid gap-3">
-                            <button class="btn btn-outline-primary option-btn p-3" onclick="selectOption(this, false)">ক) সোলার এনার্জি (সৌরশক্তি)</button>
-                            <button class="btn btn-outline-primary option-btn p-3" onclick="selectOption(this, false)">খ) বায়ুপ্রবাহ শক্তি</button>
-                            <button class="btn btn-outline-primary option-btn p-3" onclick="selectOption(this, true)">গ) কয়লা ও প্রাকৃতিক গ্যাস</button>
-                            <button class="btn btn-outline-primary option-btn p-3" onclick="selectOption(this, false)">ঘ) জোয়ার-ভাটা শক্তি</button>
+                    <div id="quiz-container">
+                        <h5 class="fw-bold mb-4" id="question-text">প্রশ্ন লোড হচ্ছে...</h5>
+                        <div class="d-grid gap-3" id="options-container">
+                            <!-- অপশনগুলো জাভাস্ক্রিপ্ট দিয়ে লোড হবে -->
                         </div>
-                        <button class="btn btn-primary w-100 mt-4 py-2 fw-bold" id="nextBtn" onclick="nextQuestion()" disabled>পরবর্তী প্রশ্ন</button>
+                        <button class="btn btn-primary w-100 mt-4 py-2 fw-bold" id="nextBtn" onclick="nextQuestion()" style="display:none;">পরবর্তী প্রশ্ন</button>
                     </div>
                 </div>
             </div>
@@ -64,30 +61,109 @@
         <p class="mb-0">© 2026 WKD Bangla EdTech platform. All rights reserved.</p>
     </footer>
 
-    <!-- সাধারণ স্ক্রিপ্ট -->
+    <!-- ডাইনামিক কুইজ লজিক স্ক্রিপ্ট -->
     <script>
-        function selectOption(button, isCorrect) {
-            const buttons = document.querySelectorAll('.option-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('btn-primary', 'btn-success', 'btn-danger');
-                btn.classList.add('btn-outline-primary');
+        const quizData = [
+            {
+                question: "নিচের কোনটি নবায়নযোগ্য শক্তির উৎস নয়?",
+                options: [
+                    "ক) সোলার এনার্জি (সৌরশক্তি)",
+                    "খ) বায়ুপ্রবাহ শক্তি",
+                    "গ) কয়লা ও প্রাকৃতিক গ্যাস",
+                    "ঘ) জোয়ার-ভাটা শক্তি"
+                ],
+                correct: 2 // গ (index 2)
+            },
+            {
+                question: "বস্তুর ওপর প্রযুক্ত বল দ্বিগুণ করলে ত্বরণের কী পরিবর্তন হবে?",
+                options: [
+                    "ক) অর্ধেক হবে",
+                    "খ) দ্বিগুণ হবে",
+                    "গ) অপরিবর্তিত থাকবে",
+                    "ঘ) চারগুণ হবে"
+                ],
+                correct: 1 // খ (index 1)
+            },
+            {
+                question: "ত্রিভুজের তিন কোণের সমষ্টি কত?",
+                options: [
+                    "ক) ৯০ ডিগ্রি",
+                    "খ) ১৮০ ডিগ্রি",
+                    "গ) ৩৬০ ডিগ্রি",
+                    "ঘ) ২৭০ ডিগ্রি"
+                ],
+                correct: 1 // খ (index 1)
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        function loadQuiz() {
+            answered = false;
+            const q = quizData[currentQuestion];
+            document.getElementById('question-count').innerText = `প্রশ্ন ${currentQuestion + 1} / ${quizData.length}`;
+            document.getElementById('question-text').innerText = q.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-outline-primary option-btn p-3';
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(index, btn);
+                optionsContainer.appendChild(btn);
             });
 
-            if (isCorrect) {
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        function selectOption(selectedIndex, button) {
+            if (answered) return;
+            answered = true;
+
+            const q = quizData[currentQuestion];
+            const buttons = document.querySelectorAll('.option-btn');
+
+            if (selectedIndex === q.correct) {
                 button.classList.remove('btn-outline-primary');
                 button.classList.add('btn-success');
+                score++;
             } else {
                 button.classList.remove('btn-outline-primary');
                 button.classList.add('btn-danger');
+                buttons[q.correct].classList.remove('btn-outline-primary');
+                buttons[q.correct].classList.add('btn-success');
             }
 
-            document.getElementById('nextBtn').removeAttribute('disabled');
+            document.getElementById('nextBtn').style.display = 'block';
         }
 
         function nextQuestion() {
-            alert('অভিনন্দন! কুইজ ডেমো সফলভাবে সম্পন্ন হয়েছে। পূর্ণাঙ্গ প্রজেক্টে এখানে পরবর্তী প্রশ্ন লোড হবে।');
-            location.reload();
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuiz();
+            } else {
+                document.getElementById('quiz-container').innerHTML = `
+                    <div class="text-center py-4">
+                        <div class="display-4 text-success mb-3"><i class="fa-solid fa-trophy"></i></div>
+                        <h3 class="fw-bold">অভিনন্দন! কুইজ সফলভাবে সম্পন্ন হয়েছে।</h3>
+                        <p class="text-muted fs-5 mt-2">আপনার প্রাপ্ত স্কোর: <span class="fw-bold text-primary">${score}</span> / ${quizData.length}</p>
+                        <button class="btn btn-primary mt-3 px-4 py-2 fw-bold" onclick="restartQuiz()">পুনরায় কুইজ দিন</button>
+                    </div>
+                `;
+            }
         }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            loadQuiz();
+        }
+
+        window.onload = loadQuiz;
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
