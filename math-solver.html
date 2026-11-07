@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI টিউটর ও ম্যাথ সলভার - WKD EdTech</title>
+    <title>AI টিউটর ও ভয়েস সলভার - WKD EdTech</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; }
-        .chat-container { background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); height: 65vh; display: flex; flex-direction: column; }
-        .chat-box { flex-grow: 1; overflow-y: auto; padding: 20px; }
-        .message-user { background-color: #0d6efd; color: white; border-radius: 15px 15px 0 15px; padding: 12px 18px; max-width: 85%; align-self: flex-end; margin-bottom: 15px; }
-        .message-ai { background-color: #e9ecef; color: #212529; border-radius: 15px 15px 15px 0; padding: 12px 18px; max-width: 85%; align-self: flex-start; margin-bottom: 15px; }
-        .sample-btn { font-size: 13px; margin: 3px; border-radius: 20px; }
+        * { font-family: 'Hind Siliguri', sans-serif; }
+        body { background-color: #f4f7fe; color: #2b3674; }
+        .chat-card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); padding: 25px; }
+        .mic-btn { width: 60px; height: 60px; border-radius: 50%; font-size: 22px; transition: all 0.3s; }
+        .listening { animation: pulse 1.5s infinite; background-color: #dc3545 !important; border-color: #dc3545 !important; }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+            70% { transform: scale(1.08); box-shadow: 0 0 0 15px rgba(220, 53, 69, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
     </style>
 </head>
 <body>
@@ -28,127 +33,141 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html">হোম</a></li>
                     <li class="nav-item"><a class="nav-link" href="dashboard.html">ড্যাশবোর্ড</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="math-solver.html">AI ম্যাথ সলভার</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="math-solver.html">AI টিউটর</a></li>
                     <li class="nav-item"><a class="nav-link" href="quiz.html">কুইজ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="video.html">ভার্চুয়াল ল্যাব</a></li>
+                    <li class="nav-item"><a class="nav-link" href="leaderboard.html">লিডারবোর্ড</a></li>
+                    <li class="nav-item"><a class="nav-link" href="discussion.html">ফোরাম</a></li>
                     <li class="nav-item"><a class="nav-link" href="parent-report.html">অভিভাবক রিপোর্ট</a></li>
-                    <li class="nav-item"><a class="btn btn-outline-light ms-lg-2 mt-2 mt-lg-0" href="login.html">লগইন</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- ম্যাথ সলভার ইন্টারফেস -->
-    <div class="container my-4">
+    <div class="container my-5">
         <div class="row justify-content-center">
-            <div class="col-md-9">
-                <div class="text-center mb-3">
-                    <h3 class="fw-bold text-primary"><i class="fa-solid fa-robot"></i> AI টিউটর ও ম্যাথ সলভার</h3>
-                    <p class="text-muted">যেকোনো গাণিতিক সমস্যা বা বিজ্ঞান সম্পর্কিত প্রশ্ন নিচে লেখো বা নমুনা প্রশ্ন বেছে নাও</p>
-                </div>
+            <div class="col-md-8 text-center">
+                <h3 class="fw-bold text-primary mb-2"><i class="fa-solid fa-microphone-lines"></i> ভয়েস-এনাবেল্ড AI টিউটর</h3>
+                <p class="text-muted mb-4">মুখে কথা বলে প্রশ্ন করো অথবা নিচে টাইপ করে সমাধান বুঝে নাও</p>
 
-                <!-- নমুনা প্রশ্ন বাটন -->
-                <div class="mb-3 text-center">
-                    <span class="small text-muted fw-bold d-block mb-2">নমুনা প্রশ্ন ট্রাই করো:</span>
-                    <button class="btn btn-outline-secondary sample-btn" onclick="askSample('3x + 12 = 27 হলে x এর মান কত?')">📐 3x + 12 = 27</button>
-                    <button class="btn btn-outline-secondary sample-btn" onclick="askSample('নিউটনের গতির দ্বিতীয় সূত্রটি ব্যাখ্যা করো')">⚡ গতির ২য় সূত্র</button>
-                    <button class="btn btn-outline-secondary sample-btn" onclick="askSample('সমকোণী ত্রিভুজের পিথাগোরাসের উপপাদ্য কী?')">🔺 পিথাগোরাস</button>
-                </div>
-
-                <div class="chat-container">
-                    <div class="chat-box d-flex flex-column" id="chatBox">
-                        <!-- AI প্রাথমিক বার্তা -->
-                        <div class="message-ai">
-                            <strong>🤖 AI টিউটর:</strong><br>
-                            হ্যালো! আমি WKD EdTech-এর AI টিউটর। যেকোনো অংক বা বিজ্ঞানের প্রশ্ন জিজ্ঞেস করো, অথবা ওপরের নমুনা বাটনগুলোতে ক্লিক করো—আমি তোমাকে ধাপে ধাপে বুঝিয়ে দেব!
-                        </div>
+                <div class="chat-card">
+                    <!-- ভয়েস সার্চ বাটন -->
+                    <div class="mb-4">
+                        <button id="micBtn" class="btn btn-primary mic-btn shadow" onclick="toggleVoiceRecognition()">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                        <p id="micStatus" class="small text-muted mt-2 mb-0">কথা বলতে মাইক বাটনে ট্যাপ করো</p>
                     </div>
 
-                    <!-- ইনপুট সেকশন -->
-                    <div class="p-3 border-top bg-light">
-                        <form id="solverForm" onsubmit="handleSolve(event)">
-                            <div class="input-group">
-                                <input type="text" id="userInput" class="form-control" placeholder="তোমার সমীকরণ বা প্রশ্ন লেখো..." required>
-                                <button class="btn btn-primary fw-bold" type="submit" id="sendBtn">
-                                    <i class="fa-solid fa-paper-plane"></i> সমাধান করো
-                                </button>
-                            </div>
-                        </form>
+                    <!-- টেক্সট ইনপুট -->
+                    <div class="input-group mb-4">
+                        <input type="text" id="questionInput" class="form-control form-control-lg rounded-start-pill" placeholder="যেমন: 'অভিকর্ষজ ত্বরণ কি?' বা অংকটি লেখো...">
+                        <button class="btn btn-primary px-4 rounded-end-pill fw-bold" onclick="solveProblem()">
+                            <i class="fa-solid fa-paper-plane me-1"></i> সমাধান করো
+                        </button>
+                    </div>
+
+                    <!-- আউটপুট ডিসপ্লে -->
+                    <div id="outputCard" class="text-start p-4 rounded-4 bg-light d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="fw-bold text-success mb-0"><i class="fa-solid fa-robot me-2"></i>AI টিউটরের সমাধান:</h5>
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle" onclick="speakResponse()">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </button>
+                        </div>
+                        <p id="solutionText" class="mb-0 fs-5"></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ফুটার -->
-    <footer class="bg-dark text-white text-center py-3">
+    <footer class="bg-dark text-white text-center py-3 mt-5">
         <p class="mb-0">© 2026 WKD Bangla EdTech platform. All rights reserved.</p>
     </footer>
 
-    <!-- স্মার্ট লজিক স্ক্রিপ্ট -->
     <script>
-        function askSample(text) {
-            document.getElementById('userInput').value = text;
+        let recognition;
+        let isListening = false;
+
+        // ভয়েস ইনপুট (Speech Recognition) সেটআপ
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'bn-BD'; // বাংলা ভয়েস রিকগনিশন
+            recognition.continuous = false;
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('questionInput').value = transcript;
+                stopMicUI();
+                solveProblem(); // স্বয়ংক্রিয়ভাবে উত্তর খুঁজবে
+            };
+
+            recognition.onerror = function() {
+                stopMicUI();
+                alert('ভয়েস শুনতে সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।');
+            };
+
+            recognition.onend = function() {
+                stopMicUI();
+            };
+        } else {
+            document.getElementById('micBtn').disabled = true;
+            document.getElementById('micStatus').innerText = 'আপনার ব্রাউজার ভয়েস ইনপুট সাপোর্ট করে না।';
         }
 
-        function handleSolve(event) {
-            event.preventDefault();
-            const input = document.getElementById('userInput');
-            const chatBox = document.getElementById('chatBox');
-            const query = input.value.trim();
+        function toggleVoiceRecognition() {
+            if (!recognition) return;
+            if (!isListening) {
+                recognition.start();
+                isListening = true;
+                const btn = document.getElementById('micBtn');
+                btn.classList.add('listening');
+                document.getElementById('micStatus').innerText = 'কথা শুনছি... এখন বলুন!';
+            } else {
+                recognition.stop();
+                stopMicUI();
+            }
+        }
 
+        function stopMicUI() {
+            isListening = false;
+            const btn = document.getElementById('micBtn');
+            btn.classList.remove('listening');
+            document.getElementById('micStatus').innerText = 'কথা বলতে মাইক বাটনে ট্যাপ করো';
+        }
+
+        // সিমুলেটেড AI উত্তর ও উত্তর পড়ে শোনানো
+        function solveProblem() {
+            const query = document.getElementById('questionInput').value.trim();
             if (!query) return;
 
-            // ইউজার মেসেজ যোগ
-            const userDiv = document.createElement('div');
-            userDiv.className = 'message-user';
-            userDiv.innerText = query;
-            chatBox.appendChild(userDiv);
+            let answer = "আপনার প্রশ্নের উত্তর তৈরি হচ্ছে...";
 
-            input.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
+            if (query.includes("অভিকর্ষজ ত্বরণ") || query.includes("g")) {
+                answer = "অভিকর্ষ বলের প্রভাবে ভূ-পৃষ্ঠে মুক্তভাবে পড়ন্ত কোনো বস্তুর বেগ বৃদ্ধির হারকে অভিকর্ষজ ত্বরণ (g) বলে। এর আদর্শ মান ৯.৮ m/s²।";
+            } else if (query.includes("ভেক্টর") || query.includes("vector")) {
+                answer = "যে সকল ভৌত রাশিকে সম্পূর্ণরূপে প্রকাশ করার জন্য মান ও দিক উভয়ের প্রয়োজন হয়, তাদেরকে ভেক্টর রাশি বলে। যেমন: বেগ, বল, সরণ ইত্যাদি।";
+            } else {
+                answer = `"${query}" প্রশ্নটির সমাধান: গাণিতিক সূত্র অনুযায়ী এটি একটি মৌলিক সমস্যা। সঠিক থিওরি প্রয়োগ করে ধাপগুলো সম্পন্ন করুন।`;
+            }
 
-            // AI সিমুলেটেড স্মার্ট রেসপন্স
-            setTimeout(() => {
-                const aiDiv = document.createElement('div');
-                aiDiv.className = 'message-ai';
-                
-                let aiResponse = "";
-                const lowerQuery = query.toLowerCase();
+            document.getElementById('solutionText').innerText = answer;
+            document.getElementById('outputCard').classList.remove('d-none');
+            speakResponse(); // উত্তর স্বয়ংক্রিয়ভাবে পড়ে শোনাবে
+        }
 
-                if(lowerQuery.includes("3x") || lowerQuery.includes("27")) {
-                    aiResponse = `<strong>🤖 AI টিউটর (ধাপে ধাপে সমাধান):</strong><br><br>
-                    <strong>প্রদত্ত সমীকরণ:</strong> 3x + 12 = 27<br><br>
-                    <strong>ধাপ ১ (পক্ষান্তর করে):</strong> 3x = 27 - 12<br>
-                    <strong>ধাপ ২ (বিয়োগ করে):</strong> 3x = 15<br>
-                    <strong>ধাপ ৩ (উভয় পক্ষকে ৩ দ্বারা ভাগ করে):</strong> x = 15 ÷ 3<br><br>
-                    ✨ <strong>উত্তর:</strong> x = 5`;
-                } 
-                else if(lowerQuery.includes("গতি") || lowerQuery.includes("নিউটন")) {
-                    aiResponse = `<strong>🤖 AI টিউটর (বিজ্ঞান ব্যাখ্যা):</strong><br><br>
-                    <strong>নিউটনের গতির দ্বিতীয় সূত্র:</strong> কোনো বস্তুর ভরবেগের পরিবর্তনের হার তার ওপর প্রযুক্ত বলের সমানুপাতিক এবং বল যে দিকে ক্রিয়া করে, বস্তুর ভরবেগের পরিবর্তন সে দিকেই ঘটে。<br><br>
-                    📐 <strong>গাণিতিক রূপ:</strong> F = m × a<br>
-                    (যেখানে F = প্রযুক্ত বল, m = বস্তুর ভর, এবং a = ত্বরণ)।`;
-                } 
-                else if(lowerQuery.includes("পিথাগোরাস") || lowerQuery.includes("ত্রিভুজ")) {
-                    aiResponse = `<strong>🤖 AI টিউটর (জ্যামিতি সমাধান):</strong><br><br>
-                    <strong>পিথাগোরাসের উপপাদ্য:</strong> যেকোনো সমকোণী ত্রিভুজের অতিভুজের ওপর অঙ্কিত বর্গক্ষেত্রের ক্ষেত্রফল অপর দুই বাহুর ওপর অঙ্কিত বর্গক্ষেত্রদ্বয়ের ক্ষেত্রফলের সমষ্টির সমান।<br><br>
-                    📐 <strong>সূত্র:</strong> (অতিভুজ)² = (ভূমি)² + (লম্ব)² [c² = a² + b²]`;
-                }
-                else {
-                    aiResponse = `<strong>🤖 AI টিউটর (বিশ্লেষণ):</strong><br><br>
-                    তোমার প্রশ্নটি হলো: <em>"${query}"</em><br><br>
-                    গবেষণা-ভিত্তিক NCTB পাঠ্যক্রম অনুযায়ী এটি একটি গুরুত্বপূর্ণ প্রশ্ন। সমস্যাটি ধাপে ধাপে চিন্তা করে সমাধান করতে সূত্রের সঠিক প্রয়োগ প্রয়োজন।<br><br>
-                    💡 <em>পরামর্শ: সঠিক ভিজ্যুয়াল অভিজ্ঞতার জন্য আমাদের <strong>ভার্চুয়াল ল্যাব</strong> বা <strong>কুইজ</strong> মডিউলগুলো ঘুরে দেখতে পারো!</em>`;
-                }
-
-                aiDiv.innerHTML = aiResponse;
-                chatBox.appendChild(aiDiv);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 600);
+        // টেক্সট-টু-স্পিচ (Speech Synthesis)
+        function speakResponse() {
+            const text = document.getElementById('solutionText').innerText;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // আগের কোনো কথা থাকলে তা থামানো
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'bn-BD'; // বাংলা ভয়েস
+                window.speechSynthesis.speak(utterance);
+            }
         }
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
