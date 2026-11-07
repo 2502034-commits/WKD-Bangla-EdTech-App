@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; }
-        .hero-section { background: linear-gradient(135deg, #0d6efd, #0dcaf0); color: white; padding: 60px 20px; text-align: center; border-radius: 0 0 25px 25px; }
+        .hero-section { background: linear-gradient(135deg, #0d6efd, #0dcaf0); color: white; padding: 65px 20px; text-align: center; border-radius: 0 0 30px 30px; }
         .feature-card { border: none; border-radius: 15px; transition: transform 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .feature-card:hover { transform: translateY(-5px); }
-        .icon-box { font-size: 2rem; color: #0d6efd; margin-bottom: 15px; }
+        .icon-box { font-size: 2.2rem; color: #0d6efd; margin-bottom: 15px; }
+        .quick-nav-btn { border-radius: 12px; font-weight: 600; padding: 12px 20px; }
     </style>
 </head>
 <body>
@@ -29,6 +30,7 @@
                     <li class="nav-item"><a class="nav-link" href="dashboard.html">ড্যাশবোর্ড</a></li>
                     <li class="nav-item"><a class="nav-link" href="math-solver.html">AI ম্যাথ সলভার</a></li>
                     <li class="nav-item"><a class="nav-link" href="quiz.html">কুইজ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="video.html">ভার্চুয়াল ল্যাব</a></li>
                     <li class="nav-item"><a class="nav-link" href="parent-report.html">অভিভাবক রিপোর্ট</a></li>
                     <li class="nav-item"><a class="btn btn-outline-light ms-lg-2 mt-2 mt-lg-0" href="login.html">লগইন</a></li>
                 </ul>
@@ -40,9 +42,38 @@
     <section class="hero-section">
         <div class="container">
             <h1 class="fw-bold mb-3">গবেষণা-ভিত্তিক আন্তর্জাতিক মানের শিক্ষা</h1>
-            <p class="lead mb-4">AI, সিমুলেশন এবং আধুনিক কগনিটিভ সাইন্সের সমন্বয়ে গঠিত বাংলাদেশের প্রথম ডিজিটাল লার্নিং ইকোসিস্টেম।</p>
-            <a href="dashboard.html" class="btn btn-light btn-lg text-primary fw-bold px-4 me-2">পড়াশোনা শুরু করো</a>
-            <a href="math-solver.html" class="btn btn-warning btn-lg fw-bold px-4">AI টিউটর ব্যবহার করো</a>
+            <p class="lead mb-4">AI, সিমুলেশন এবং কগনিটিভ সাইন্সের সমন্বয়ে গঠিত বাংলাদেশের প্রথম স্মার্ট ডিজিটাল লার্নিং ইকোসিস্টেম।</p>
+            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                <a href="dashboard.html" class="btn btn-light btn-lg text-primary fw-bold px-4">পড়াশোনা শুরু করো</a>
+                <a href="math-solver.html" class="btn btn-warning btn-lg fw-bold px-4">AI টিউটর ব্যবহার করো</a>
+                <a href="video.html" class="btn btn-outline-light btn-lg fw-bold px-4">ভার্চুয়াল ল্যাব</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- দ্রুত নেভিগেশন শর্টকাট -->
+    <section class="container my-5">
+        <div class="row g-3 text-center">
+            <div class="col-6 col-md-3">
+                <a href="math-solver.html" class="btn btn-primary w-100 quick-nav-btn shadow-sm">
+                    <i class="fa-solid fa-robot d-block fs-3 mb-1"></i> AI টিউটর
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="video.html" class="btn btn-success w-100 quick-nav-btn shadow-sm">
+                    <i class="fa-solid fa-flask d-block fs-3 mb-1"></i> সায়েন্স ল্যাব
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="quiz.html" class="btn btn-warning text-dark w-100 quick-nav-btn shadow-sm">
+                    <i class="fa-solid fa-pen-to-square d-block fs-3 mb-1"></i> সাপ্তাহিক কুইজ
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="parent-report.html" class="btn btn-info text-white w-100 quick-nav-btn shadow-sm">
+                    <i class="fa-solid fa-chart-line d-block fs-3 mb-1"></i> প্রোগ্রেস রিপোর্ট
+                </a>
+            </div>
         </div>
     </section>
 
@@ -55,7 +86,7 @@
                 <div class="card feature-card p-4 h-100 text-center">
                     <div class="icon-box"><i class="fa-solid fa-atom"></i></div>
                     <h5>কোর লার্নিং ইঞ্জিন</h5>
-                    <p class="text-muted">PhET, GeoGebra সিমুলেশন, মার্ক রবার স্টাইল ভিডিও এবং সায়েন্স প্রজেক্ট।</p>
+                    <p class="text-muted">PhET, GeoGebra, Desmos সিমুলেশন এবং সায়েন্স প্রজেক্ট ভিত্তিক শিক্ষা।</p>
                 </div>
             </div>
 
@@ -71,7 +102,7 @@
                 <div class="card feature-card p-4 h-100 text-center">
                     <div class="icon-box"><i class="fa-solid fa-robot"></i></div>
                     <h5>AI ও ব্যক্তিগতকরণ</h5>
-                    <p class="text-muted">ল্যাপটপ বা মোবাইলে ব্যক্তিগত স্টাডি প্ল্যান ও স্মার্ট রেকমেন্ডেশন।</p>
+                    <p class="text-muted">ব্যক্তিগত স্টাডি প্ল্যান, AI ম্যাথ সলভার ও স্মার্ট রেকমেন্ডেশন।</p>
                 </div>
             </div>
 
@@ -95,7 +126,7 @@
                 <div class="card feature-card p-4 h-100 text-center">
                     <div class="icon-box"><i class="fa-solid fa-microchip"></i></div>
                     <h5>প্রযুক্তিগত ভিত্তি</h5>
-                    <p class="text-muted">অফলাইন-ফার্স্ট সুবিধা, BanglaBERT ও NCTB পাঠ্যক্রমের অটো-আপডেট।</p>
+                    <p class="text-muted">অফলাইন-ফার্স্ট সুবিধা, BanglaBERT ও NCTB পাঠ্যক্রমের স্বয়ংক্রিয় আপডেট।</p>
                 </div>
             </div>
 
