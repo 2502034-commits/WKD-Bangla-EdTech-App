@@ -13,6 +13,7 @@
         .option-btn:hover { background-color: #e9ecef; border-color: #0d6efd; }
         .selected-option { background-color: #0d6efd !important; color: white !important; border-color: #0d6efd !important; }
         .subject-badge { font-size: 14px; padding: 6px 12px; border-radius: 20px; }
+        .trophy-icon { font-size: 80px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -84,14 +85,20 @@
                     </div>
                 </div>
 
-                <!-- রেজাল্ট কার্ড -->
+                <!-- রেজাল্ট ও ট্রফি কার্ড -->
                 <div class="quiz-card text-center d-none" id="resultCard">
-                    <h2 class="text-success mb-3">🏆 কুইজ সম্পন্ন হয়েছে!</h2>
-                    <p class="fs-5">তোমার মোট প্রাপ্ত নম্বর: <strong id="scoreText" class="text-primary">০</strong></p>
+                    <div id="trophyContainer" class="trophy-icon">🏆</div>
+                    <h2 class="text-success mb-2" id="resultTitle">কুইজ সম্পন্ন হয়েছে!</h2>
+                    <p class="fs-5 mb-3">তোমার মোট প্রাপ্ত নম্বর: <strong id="scoreText" class="text-primary">০</strong></p>
+                    
                     <div class="progress mb-4" style="height: 25px;">
                         <div class="progress-bar bg-success" id="progressBar" style="width: 0%;">০%</div>
                     </div>
-                    <button class="btn btn-outline-primary btn-lg" onclick="resetQuiz()">পুনরায় পরীক্ষা দাও</button>
+                    
+                    <p class="text-muted small mb-4" id="saveNotice">✅ কুইজ ফলাফল লোকাল মেমোরিতে সেভ করা হয়েছে!</p>
+
+                    <button class="btn btn-primary btn-lg px-4 me-2" onclick="resetQuiz()">পুনরায় পরীক্ষা দাও</button>
+                    <a href="dashboard.html" class="btn btn-outline-secondary btn-lg px-4">ড্যাশবোর্ড দেখুন</a>
                 </div>
 
             </div>
@@ -103,60 +110,23 @@
         <p class="mb-0">© 2026 WKD Bangla EdTech platform. All rights reserved.</p>
     </footer>
 
-    <!-- কুইজ ডাটা ও লজিক -->
+    <!-- কুইজ ডাটা ও ট্রফি লজিক -->
     <script>
-        // NCTB কারিকুলাম কুইজ ডাটাবেস
         const quizDatabase = {
             "physics": [
-                {
-                    q: "নিচের কোনটি ভেক্টর রাশি?",
-                    options: ["ভর", "দূরত্ব", "বেগ", "কাজ"],
-                    correct: 2
-                },
-                {
-                    q: "কোনো বস্তুর মুক্তভাবে পড়ন্ত অবস্থায় ত্বরণ (g) এর মান কত?",
-                    options: ["9.8 m/s²", "9.8 cm/s²", "10 m/s²", "8.9 m/s²"],
-                    correct: 0
-                },
-                {
-                    q: "নিউটনের প্রথম সূত্র থেকে কিসের ধারণা পাওয়া যায়?",
-                    options: ["বল ও জড়তা", "ত্বরণ", "ভরবেগ", "শক্তি"],
-                    correct: 0
-                }
+                { q: "নিচের কোনটি ভেক্টর রাশি?", options: ["ভর", "দূরত্ব", "বেগ", "কাজ"], correct: 2 },
+                { q: "কোনো বস্তুর মুক্তভাবে পড়ন্ত অবস্থায় ত্বরণ (g) এর মান কত?", options: ["9.8 m/s²", "9.8 cm/s²", "10 m/s²", "8.9 m/s²"], correct: 0 },
+                { q: "নিউটনের প্রথম সূত্র থেকে কিসের ধারণা পাওয়া যায়?", options: ["বল ও জড়তা", "ত্বরণ", "ভরবেগ", "শক্তি"], correct: 0 }
             ],
             "chemistry": [
-                {
-                    q: "পানির রাসায়নিক সংকেত কোনটি?",
-                    options: ["CO2", "H2O", "NaCl", "HCl"],
-                    correct: 1
-                },
-                {
-                    q: "পর্যায় সারণীর ১ম গ্রুপের মৌলগুলোকে কী বলা হয়?",
-                    options: ["মৃদক্ষার ধাতু", "হ্যালোজেন", "ক্ষার ধাতু", "নিষ্ক্রিয় গ্যাস"],
-                    correct: 2
-                },
-                {
-                    q: "এসিডের পিএইচ (pH) মান কত হয়ে থাকে?",
-                    options: ["৭ এর কম", "৭ এর সমান", "৭ এর বেশি", "১৪ এর বেশি"],
-                    correct: 0
-                }
+                { q: "পানির রাসায়নিক সংকেত কোনটি?", options: ["CO2", "H2O", "NaCl", "HCl"], correct: 1 },
+                { q: "পর্যায় সারণীর ১ম গ্রুপের মৌলগুলোকে কী বলা হয়?", options: ["মৃদক্ষার ধাতু", "হ্যালোজেন", "ক্ষার ধাতু", "নিষ্ক্রিয় গ্যাস"], correct: 2 },
+                { q: "এসিডের পিএইচ (pH) মান কত হয়ে থাকে?", options: ["৭ এর কম", "৭ এর সমান", "৭ এর বেশি", "১৪ এর বেশি"], correct: 0 }
             ],
             "math": [
-                {
-                    q: "sin²θ + cos²θ = কত?",
-                    options: ["0", "1", "-1", "2"],
-                    correct: 1
-                },
-                {
-                    q: "সমকোণী ত্রিভুজের বৃহত্তম বাহুকে কী বলা হয়?",
-                    options: ["লম্ব", "ভূমি", "অতিভুজ", "মধ্যমা"],
-                    correct: 2
-                },
-                {
-                    q: "log₁₀(100) এর মান কত?",
-                    options: ["1", "2", "10", "100"],
-                    correct: 1
-                }
+                { q: "sin²θ + cos²θ = কত?", options: ["0", "1", "-1", "2"], correct: 1 },
+                { q: "সমকোণী ত্রিভুজের বৃহত্তম বাহুকে কী বলা হয়?", options: ["লম্ব", "ভূমি", "অতিভুজ", "মধ্যমা"], correct: 2 },
+                { q: "log₁₀(100) এর মান কত?", options: ["1", "2", "10", "100"], correct: 1 }
             ]
         };
 
@@ -238,6 +208,26 @@
             const total = currentSubjectQuestions.length;
             const percentage = Math.round((score / total) * 100);
 
+            // ট্রফি সিস্টেম লজিক
+            const trophyContainer = document.getElementById('trophyContainer');
+            const resultTitle = document.getElementById('resultTitle');
+
+            if (percentage >= 80) {
+                trophyContainer.innerHTML = '🥇'; // Gold Trophy
+                resultTitle.innerText = "অসাধারণ! চমৎকার পারফরম্যান্স!";
+            } else if (percentage >= 50) {
+                trophyContainer.innerHTML = '🥈'; // Silver Trophy
+                resultTitle.innerText = "খুব ভালো হয়েছে!";
+            } else {
+                trophyContainer.innerHTML = '🥉'; // Bronze Trophy
+                resultTitle.innerText = "আরও চেষ্টা করতে হবে!";
+            }
+
+            // LocalStorage-এ পয়েন্ট ও স্কোর সেভ
+            const prevScore = parseInt(localStorage.getItem('wkd_quiz_score') || '0');
+            localStorage.setItem('wkd_quiz_score', prevScore + (score * 10)); // প্রতি সঠিক উত্তরের জন্য ১০ পয়েন্ট
+            localStorage.setItem('wkd_last_quiz_pct', percentage);
+
             document.getElementById('quizBox').classList.add('d-none');
             document.getElementById('resultCard').classList.remove('d-none');
             document.getElementById('scoreText').innerText = `${score} / ${total}`;
@@ -251,7 +241,6 @@
             loadQuiz();
         }
 
-        // শুরুতে লোড
         window.onload = loadQuiz;
     </script>
 
