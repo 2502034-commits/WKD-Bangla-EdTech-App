@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>গ্রুপ ডিসকাশন ফোরাম - WKD EdTech</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; }
+        .chat-container { background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); height: 70vh; display: flex; flex-direction: column; }
+        .message-box { flex-grow: 1; overflow-y: auto; padding: 20px; }
+        .chat-bubble { background: #e9ecef; border-radius: 12px; padding: 10px 15px; margin-bottom: 12px; max-width: 80%; }
+        .my-bubble { background: #0d6efd; color: white; margin-left: auto; border-radius: 12px; padding: 10px 15px; margin-bottom: 12px; max-width: 80%; }
+    </style>
+</head>
+<body>
+
+    <!-- নেভিগেশন বার -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🎯 WKD EdTech</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">হোম</a></li>
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html">ড্যাশবোর্ড</a></li>
+                    <li class="nav-item"><a class="nav-link" href="math-solver.html">AI ম্যাথ সলভার</a></li>
+                    <li class="nav-item"><a class="nav-link" href="quiz.html">কুইজ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="leaderboard.html">লিডারবোর্ড</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="discussion.html">ডিসকাশন ফোরাম</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- চ্যাট সেকশন -->
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-md-9">
+                <div class="text-center mb-3">
+                    <h3 class="fw-bold text-primary"><i class="fa-solid fa-comments"></i> স্টাডি গ্রুপ ও ডিসকাশন ফোরাম</h3>
+                    <p class="text-muted">সহপাঠীদের সাথে পদার্থবিজ্ঞান, রসায়ন বা গণিতের সমস্যা নিয়ে আলোচনা করো</p>
+                </div>
+
+                <div class="chat-container">
+                    <div class="message-box" id="messageBox">
+                        <div class="chat-bubble">
+                            <strong>রাফিদ আহমেদ:</strong> হ্যালো বন্ধুরা! পদার্থবিজ্ঞানের ভেক্টর অধ্যায়ের ম্যাথগুলো কে কে সলভ করেছো?
+                        </div>
+                        <div class="chat-bubble">
+                            <strong>সাবিহা সুলতানা:</strong> হ্যাঁ ভাইয়া, আমি করেছি। কোনো সমস্যা থাকলে বলো, হেল্প করতে পারব।
+                        </div>
+                    </div>
+
+                    <!-- ইনপুট ফর্ম -->
+                    <div class="p-3 border-top bg-light">
+                        <form id="chatForm" onsubmit="sendMessage(event)">
+                            <div class="input-group">
+                                <input type="text" id="chatInput" class="form-control" placeholder="তোমার মেসেজ বা প্রশ্ন এখানে লেখो..." required>
+                                <button class="btn btn-primary px-4" type="submit">
+                                    <i class="fa-solid fa-paper-plane"></i> পাঠান
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3">
+        <p class="mb-0">© 2026 WKD Bangla EdTech platform. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function loadMessages() {
+            const savedMsgs = JSON.parse(localStorage.getItem('wkd_chat_msgs') || '[]');
+            const box = document.getElementById('messageBox');
+            
+            savedMsgs.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = msg.isMe ? 'my-bubble' : 'chat-bubble';
+                div.innerHTML = `<strong>${msg.sender}:</strong> ${msg.text}`;
+                box.appendChild(div);
+            });
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            const box = document.getElementById('messageBox');
+            const div = document.createElement('div');
+            div.className = 'my-bubble';
+            div.innerHTML = `<strong>আপনি:</strong> ${text}`;
+            box.appendChild(div);
+
+            // লোকাল স্টোরেজে সংরক্ষণ
+            const savedMsgs = JSON.parse(localStorage.getItem('wkd_chat_msgs') || '[]');
+            savedMsgs.push({ sender: "আপনি", text: text, isMe: true });
+            localStorage.setItem('wkd_chat_msgs', JSON.stringify(savedMsgs));
+
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+        }
+
+        window.onload = loadMessages;
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
