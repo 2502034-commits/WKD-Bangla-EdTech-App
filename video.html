@@ -3,33 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ভিডিও লেসন - WKD EdTech</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Hind Siliguri', sans-serif; } </style>
+    <title>ভিজুয়াল সিমুলেশন ও ল্যাব - WKD EdTech</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; }
+        .lab-container { background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 20px; }
+        .sim-frame { width: 100%; height: 500px; border: none; border-radius: 10px; }
+    </style>
 </head>
-<body class="bg-gray-50 h-screen">
+<body>
 
-    <!-- হেডার -->
-    <nav class="bg-blue-600 text-white p-4 shadow-lg flex justify-between items-center">
-        <h1 class="text-xl font-bold">🎬 ভিডিও লেসন</h1>
-        <a href="dashboard.html" class="bg-white text-blue-600 px-4 py-1 rounded-full font-semibold text-sm">ফিরে যান</a>
+    <!-- নেভিগেশন বার -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🎯 WKD EdTech</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">হোম</a></li>
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html">ড্যাশবোর্ড</a></li>
+                    <li class="nav-item"><a class="nav-link" href="math-solver.html">AI ম্যাথ সলভার</a></li>
+                    <li class="nav-item"><a class="nav-link" href="quiz.html">কুইজ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="parent-report.html">অভিভাবক রিপোর্ট</a></li>
+                    <li class="nav-item"><a class="btn btn-outline-light ms-lg-2 mt-2 mt-lg-0" href="login.html">লগইন</a></li>
+                </ul>
+            </div>
+        </div>
     </nav>
 
-    <div class="p-4 max-w-3xl mx-auto mt-4">
-        <!-- ভিডিও প্লেয়ার (ইউটিউব এমবেড) -->
-        <div class="bg-black rounded-xl overflow-hidden shadow-lg mb-6 aspect-video">
-            <iframe class="w-full h-full" src="https://www.youtube.com/embed/kKKM8Y-u7ds" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <!-- সিমুলেশন ও ল্যাব সেকশন -->
+    <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="fw-bold text-primary"><i class="fa-solid fa-atom"></i> PhET ইন্টারেক্টিভ সায়েন্স ল্যাব</h2>
+                <p class="text-muted">তত্ত্ব মুখস্থ না করে সিমুলেশনের মাধ্যমে নিজে পরিবর্তন করে ফলাফল পর্যবেক্ষণ করো (Predict-Observe-Explain পদ্ধতি)।</p>
+            </div>
         </div>
 
-        <!-- ভিডিওর বিবরণ -->
-        <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
-            <h2 class="text-2xl font-bold text-gray-800 mb-2">নিউটনের গতিসূত্র (সূত্রের বাস্তব ব্যবহার)</h2>
-            <p class="text-gray-600 leading-relaxed">
-                এই ভিডিওতে আমরা দেখব কীভাবে নিউটনের গতিসূত্র আমাদের দৈনন্দিন জীবনে কাজ করে। বাস হঠাৎ ব্রেক করলে কেন আমরা সামনে ঝুঁকে পড়ি, বা রিকশা চালানোর সময় কীভাবে বল প্রয়োগ হয়—সবকিছু সহজভাবে বুঝিয়ে দেওয়া হয়েছে।
-            </p>
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="lab-container">
+                    <!-- PhET Force and Motion Simulation Embed -->
+                    <iframe class="sim-frame" src="https://phet.colorado.edu/sims/html/force-basics/latest/force-basics_all.html?locale=bn" allowfullscreen></iframe>
+                    
+                    <div class="mt-4 p-3 bg-light rounded-3">
+                        <h5><i class="fa-solid fa-lightbulb text-warning"></i> ল্যাব গাইডলাইন ও কার্যালী:</h5>
+                        <ul class="mb-0 text-muted">
+                            <li>বস্তুর ওপর বিভিন্ন মাত্রার বল প্রয়োগ করে গতির পরিবর্তন লক্ষ করো।</li>
+                            <li>ঘর্ষণ বল (Friction) বাড়িয়ে বা কমিয়ে ফলাফল অবলোকন করো।</li>
+                            <li>তোমার প্রাপ্ত অভিজ্ঞতা ড্যাশবোর্ডের কুইজে প্রয়োগ করো।</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- ফুটার -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p class="mb-0">© 2026 WKD Bangla EdTech platform. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
