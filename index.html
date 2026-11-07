@@ -105,6 +105,7 @@
                     <li class="nav-item"><a class="nav-link" href="dashboard.html">ড্যাশবোর্ড</a></li>
                     <li class="nav-item"><a class="nav-link" href="math-solver.html">AI টিউটর</a></li>
                     <li class="nav-item"><a class="nav-link" href="quiz.html">কুইজ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="lessons.html">লেকচার</a></li>
                     <li class="nav-item"><a class="nav-link" href="leaderboard.html">লিডারবোর্ড</a></li>
                     <li class="nav-item"><a class="nav-link" href="discussion.html">ফোরাম</a></li>
                     <li class="nav-item"><a class="nav-link" href="video.html">সায়েন্স ল্যাব</a></li>
@@ -117,7 +118,7 @@
 
     <div class="container my-4">
         
-        <!-- হিরো সেকশন (Custom Tech Background) -->
+        <!-- হিরো সেকশন -->
         <div class="hero-card mb-4 text-center text-md-start">
             <div class="row align-items-center">
                 <div class="col-md-8">
@@ -223,7 +224,6 @@
     </footer>
 
     <script>
-        // লোকাল মেমোরি থেকে বর্তমান পয়েন্ট ফেচ করে হোমপেজে দেখানো
         window.onload = function() {
             const score = localStorage.getItem('wkd_quiz_score') || '30';
             document.getElementById('userScoreDisplay').innerText = score + ' Pts';
