@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>গ্রুপ ডিসকাশন ফোরাম - WKD EdTech</title>
+    <title>ডিসকাশন ফোরাম - WKD EdTech</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; }
-        .chat-container { background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); height: 70vh; display: flex; flex-direction: column; }
-        .message-box { flex-grow: 1; overflow-y: auto; padding: 20px; }
-        .chat-bubble { background: #e9ecef; border-radius: 12px; padding: 10px 15px; margin-bottom: 12px; max-width: 80%; }
-        .my-bubble { background: #0d6efd; color: white; margin-left: auto; border-radius: 12px; padding: 10px 15px; margin-bottom: 12px; max-width: 80%; }
+        * { font-family: 'Hind Siliguri', sans-serif; }
+        body { background-color: #f4f7fe; color: #2b3674; }
+        .forum-card { background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px; margin-bottom: 20px; }
+        .post-box { background: #f8f9fa; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #4318ff; }
     </style>
 </head>
 <body>
@@ -24,93 +24,104 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link" href="index.html">হোম</a></li>
                     <li class="nav-item"><a class="nav-link" href="dashboard.html">ড্যাশবোর্ড</a></li>
-                    <li class="nav-item"><a class="nav-link" href="math-solver.html">AI ম্যাথ সলভার</a></li>
+                    <li class="nav-item"><a class="nav-link" href="math-solver.html">AI টিউটর</a></li>
                     <li class="nav-item"><a class="nav-link" href="quiz.html">কুইজ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="lessons.html">লেকচার</a></li>
                     <li class="nav-item"><a class="nav-link" href="leaderboard.html">লিডারবোর্ড</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="discussion.html">ডিসকাশন ফোরাম</a></li>
+                    <li class="nav-item"><a class="nav-link active fw-bold text-info" href="discussion.html">ফোরাম</a></li>
+                    <li class="nav-item"><a class="nav-link" href="parent-report.html">অভিভাবক রিপোর্ট</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- চ্যাট সেকশন -->
-    <div class="container my-4">
+    <!-- মেইন কন্টেন্ট -->
+    <div class="container my-5">
         <div class="row justify-content-center">
-            <div class="col-md-9">
-                <div class="text-center mb-3">
-                    <h3 class="fw-bold text-primary"><i class="fa-solid fa-comments"></i> স্টাডি গ্রুপ ও ডিসকাশন ফোরাম</h3>
-                    <p class="text-muted">সহপাঠীদের সাথে পদার্থবিজ্ঞান, রসায়ন বা গণিতের সমস্যা নিয়ে আলোচনা করো</p>
+            <div class="col-md-8">
+                
+                <!-- পোস্ট করার ফর্ম -->
+                <div class="forum-card">
+                    <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-comments me-2"></i>স্টুডেন্ট ডিসকাশন ফোরাম</h4>
+                    <p class="text-muted small mb-4">তোমার কোনো প্রশ্ন বা সমস্যা থাকলে নিচে লিখে পোস্ট করো, সহপাঠীরা উত্তর দেবে।</p>
+                    
+                    <div class="mb-3">
+                        <input type="text" id="authorInput" class="form-control mb-2 rounded-pill px-3" placeholder="তোমার নাম...">
+                        <textarea id="postInput" class="form-control rounded-4 p-3" rows="3" placeholder="আজ কী শিখলে বা কোন সমস্যায় পড়েছ তা এখানে লেখো..."></textarea>
+                    </div>
+                    <button class="btn btn-primary rounded-pill px-4 fw-bold" onclick="addPost()">
+                        <i class="fa-solid fa-paper-plane me-1"></i> পোস্ট করুন
+                    </button>
                 </div>
 
-                <div class="chat-container">
-                    <div class="message-box" id="messageBox">
-                        <div class="chat-bubble">
-                            <strong>রাফিদ আহমেদ:</strong> হ্যালো বন্ধুরা! পদার্থবিজ্ঞানের ভেক্টর অধ্যায়ের ম্যাথগুলো কে কে সলভ করেছো?
-                        </div>
-                        <div class="chat-bubble">
-                            <strong>সাবিহা সুলতানা:</strong> হ্যাঁ ভাইয়া, আমি করেছি। কোনো সমস্যা থাকলে বলো, হেল্প করতে পারব।
-                        </div>
-                    </div>
-
-                    <!-- ইনপুট ফর্ম -->
-                    <div class="p-3 border-top bg-light">
-                        <form id="chatForm" onsubmit="sendMessage(event)">
-                            <div class="input-group">
-                                <input type="text" id="chatInput" class="form-control" placeholder="তোমার মেসেজ বা প্রশ্ন এখানে লেখो..." required>
-                                <button class="btn btn-primary px-4" type="submit">
-                                    <i class="fa-solid fa-paper-plane"></i> পাঠান
-                                </button>
-                            </div>
-                        </form>
+                <!-- পোস্ট ফিড -->
+                <div class="forum-card">
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-stream text-success me-2"></i>সাম্প্রতিক আলোচনা</h5>
+                    <div id="postsContainer">
+                        <!-- ডাইনামিক পোস্টগুলো এখানে লোড হবে -->
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <footer class="bg-dark text-white text-center py-3">
+    <footer class="bg-dark text-white text-center py-3 mt-5">
         <p class="mb-0">© 2026 WKD Bangla EdTech platform. All rights reserved.</p>
     </footer>
 
     <script>
-        function loadMessages() {
-            const savedMsgs = JSON.parse(localStorage.getItem('wkd_chat_msgs') || '[]');
-            const box = document.getElementById('messageBox');
-            
-            savedMsgs.forEach(msg => {
-                const div = document.createElement('div');
-                div.className = msg.isMe ? 'my-bubble' : 'chat-bubble';
-                div.innerHTML = `<strong>${msg.sender}:</strong> ${msg.text}`;
-                box.appendChild(div);
-            });
-            box.scrollTop = box.scrollHeight;
+        let posts = JSON.parse(localStorage.getItem('wkd_forum_posts') || JSON.stringify([
+            { author: "রাহিম আহমেদ", text: "পদার্থবিজ্ঞানের ভেক্টরের ডট গুণন নিয়ে কারো কি কোনো নোট আছে?", time: "আজ, সকাল ১০:১৫" },
+            { author: "ফাতেমা তুজ জোহরা", text: "ডিফারেন্সিয়েশনের সূত্রগুলো খুব সহজে মনে রাখার টেকনিকটা দারুণ লেগেছে!", time: "গতকাল, দুপুর ২:৩০" }
+        ]));
+
+        function renderPosts() {
+            const container = document.getElementById('postsContainer');
+            if (posts.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center">এখনো কোনো পোস্ট নেই। প্রথম পোস্টটি তুমিই করো!</p>';
+                return;
+            }
+
+            container.innerHTML = posts.map((post, index) => `
+                <div class="post-box">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-user-circle text-primary me-1"></i> ${escapeHtml(post.author)}</h6>
+                        <span class="text-muted small">${escapeHtml(post.time)}</span>
+                    </div>
+                    <p class="mb-0 mt-2 text-secondary">${escapeHtml(post.text)}</p>
+                </div>
+            `).join('');
         }
 
-        function sendMessage(event) {
-            event.preventDefault();
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if(!text) return;
+        function addPost() {
+            const author = document.getElementById('authorInput').value.trim() || "অজ্ঞাত শিক্ষার্থী";
+            const text = document.getElementById('postInput').value.trim();
 
-            const box = document.getElementById('messageBox');
-            const div = document.createElement('div');
-            div.className = 'my-bubble';
-            div.innerHTML = `<strong>আপনি:</strong> ${text}`;
-            box.appendChild(div);
+            if (!text) {
+                alert('দয়া করে কিছু লিখে পোস্ট করুন।');
+                return;
+            }
 
-            // লোকাল স্টোরেজে সংরক্ষণ
-            const savedMsgs = JSON.parse(localStorage.getItem('wkd_chat_msgs') || '[]');
-            savedMsgs.push({ sender: "আপনি", text: text, isMe: true });
-            localStorage.setItem('wkd_chat_msgs', JSON.stringify(savedMsgs));
+            const now = new Date();
+            const timeStr = `আজ, ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
 
-            input.value = '';
-            box.scrollTop = box.scrollHeight;
+            posts.unshift({ author, text, time: timeStr });
+            localStorage.setItem('wkd_forum_posts', JSON.stringify(posts));
+
+            document.getElementById('postInput').value = '';
+            document.getElementById('authorInput').value = '';
+            renderPosts();
         }
 
-        window.onload = loadMessages;
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        window.onload = renderPosts;
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
