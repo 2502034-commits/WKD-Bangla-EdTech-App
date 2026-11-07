@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; }
-        .lab-container { background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 20px; }
-        .sim-frame { width: 100%; height: 500px; border: none; border-radius: 10px; }
+        .lab-card { background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 30px; text-align: center; }
     </style>
 </head>
 <body>
@@ -44,14 +43,21 @@
         </div>
 
         <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="lab-container">
-                    <!-- PhET Force and Motion Simulation Embed -->
-                    <iframe class="sim-frame" src="https://phet.colorado.edu/sims/html/force-basics/latest/force-basics_all.html?locale=bn" allowfullscreen></iframe>
+            <div class="col-md-8">
+                <div class="lab-card">
+                    <div class="display-4 text-primary mb-3">
+                        <i class="fa-solid fa-flask-vial"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">বল ও গতি (Force and Motion Lab)</h4>
+                    <p class="text-muted mb-4">নিচে ক্লিক করে PhET-এর অফিসিয়াল ভার্চুয়াল ল্যাবে প্রবেশ করুন এবং ঘর্ষণ বল ও গতির ওপর বিভিন্ন প্র্যাকটিক্যাল পরীক্ষা চালান।</p>
                     
-                    <div class="mt-4 p-3 bg-light rounded-3">
+                    <a href="https://phet.colorado.edu/sims/html/force-basics/latest/force-basics_all.html?locale=bn" target="_blank" class="btn btn-primary btn-lg px-5 fw-bold mb-4">
+                        <i class="fa-solid fa-external-link-alt me-2"></i> ল্যাব ওপেন করুন (Launch Lab)
+                    </a>
+
+                    <div class="mt-4 p-3 bg-light rounded-3 text-start">
                         <h5><i class="fa-solid fa-lightbulb text-warning"></i> ল্যাব গাইডলাইন ও কার্যালী:</h5>
-                        <ul class="mb-0 text-muted">
+                        <ul class="mb-0 text-muted small">
                             <li>বস্তুর ওপর বিভিন্ন মাত্রার বল প্রয়োগ করে গতির পরিবর্তন লক্ষ করো।</li>
                             <li>ঘর্ষণ বল (Friction) বাড়িয়ে বা কমিয়ে ফলাফল অবলোকন করো।</li>
                             <li>তোমার প্রাপ্ত অভিজ্ঞতা ড্যাশবোর্ডের কুইজে প্রয়োগ করো।</li>
