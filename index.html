@@ -11,70 +11,58 @@
     
     <style>
         * { font-family: 'Hind Siliguri', sans-serif; }
-        
-        /* ব্যাকগ্রাউন্ড ইমেজ এবং ডার্ক গ্লাস থিম */
-        body { 
-            background: linear-gradient(rgba(10, 17, 40, 0.9), rgba(10, 17, 40, 0.92)), url('1000059852_2.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #ffffff;
-            min-height: 100vh;
-        }
+        body { background-color: #f4f7fe; color: #2b3674; }
 
         /* Modern Glassmorphic Navbar */
-        .navbar-custom { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .navbar-custom { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
         
-        /* Hero Section with Glowing Neon Vibe */
+        /* Hero Section with Custom Background Image & Dark Overlay */
         .hero-card {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 243, 255, 0.3);
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
             border-radius: 24px;
             color: white;
             padding: 55px 30px;
-            box-shadow: 0px 0px 40px rgba(0, 243, 255, 0.15);
+            box-shadow: 0px 20px 40px rgba(15, 23, 42, 0.3);
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Glass Cards for Widgets & Features */
+        /* Psychologically Engaging Gamified Widgets */
         .widget-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: white;
             border-radius: 20px;
-            padding: 22px;
-            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+            border: none;
+            padding: 20px;
+            box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08);
             transition: all 0.3s ease;
-            color: white;
         }
         .widget-card:hover {
             transform: translateY(-5px);
-            border-color: #00f3ff;
-            box-shadow: 0px 15px 35px rgba(0, 243, 255, 0.25);
+            box-shadow: 0px 20px 45px rgba(112, 144, 176, 0.15);
         }
 
-        /* Action Buttons */
+        /* Action Buttons with Dynamic Icons */
         .action-card {
-            background: rgba(30, 41, 59, 0.75);
-            backdrop-filter: blur(10px);
+            background: white;
             border-radius: 20px;
             padding: 22px 15px;
             text-decoration: none;
-            color: #ffffff;
+            color: #2b3674;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 10px 30px rgba(112, 144, 176, 0.08);
+            border: 1px solid rgba(226, 232, 240, 0.8);
         }
         .action-card:hover {
             transform: translateY(-6px);
-            color: #00f3ff;
-            border-color: #00f3ff;
-            background: rgba(15, 23, 42, 0.9);
-            box-shadow: 0px 15px 35px rgba(0, 243, 255, 0.3);
+            color: #4318ff;
+            border-color: #4318ff;
+            box-shadow: 0px 15px 35px rgba(67, 24, 255, 0.15);
         }
         .icon-box {
             width: 55px;
@@ -90,8 +78,8 @@
         /* Streak & Stat Badge */
         .stat-badge {
             background: rgba(255, 125, 0, 0.2);
-            color: #ff9f43;
-            border: 1px solid rgba(255, 159, 67, 0.4);
+            color: #ffa500;
+            border: 1px solid rgba(255, 125, 0, 0.4);
             padding: 8px 16px;
             border-radius: 30px;
             font-weight: 700;
@@ -107,7 +95,7 @@
     <!-- নেভিগেশন বার -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-4 text-info" href="index.html">🎯 WKD EdTech</a>
+            <a class="navbar-brand fw-bold fs-4" href="index.html">🎯 WKD EdTech</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -121,7 +109,7 @@
                     <li class="nav-item"><a class="nav-link" href="discussion.html">ফোরাম</a></li>
                     <li class="nav-item"><a class="nav-link" href="video.html">সায়েন্স ল্যাব</a></li>
                     <li class="nav-item"><a class="nav-link" href="parent-report.html">অভিভাবক রিপোর্ট</a></li>
-                    <li class="nav-item ms-lg-2"><a class="btn btn-outline-info btn-sm px-3 rounded-pill fw-bold" href="login.html">লগইন</a></li>
+                    <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm px-3 rounded-pill fw-bold" href="login.html">লগইন</a></li>
                 </ul>
             </div>
         </div>
@@ -129,43 +117,43 @@
 
     <div class="container my-4">
         
-        <!-- হিরো সেকশন -->
+        <!-- হিরো সেকশন (Custom Tech Background) -->
         <div class="hero-card mb-4 text-center text-md-start">
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <span class="stat-badge mb-3"><i class="fa-solid fa-fire"></i> আপনার স্ট্রিক: ৩ দিন সক্রিয়!</span>
                     <h1 class="fw-bold display-6 mb-2">আজকে নতুন কী শিখতে চাও?</h1>
-                    <p class="fs-5 text-light opacity-75 mb-4">কৃত্রিম বুদ্ধিমত্তা ও ভিজ্যুয়াল সিমুলেশনের মাধ্যমে বিজ্ঞানের জটিল বিষয়গুলোকে সহজেই জয় করো।</p>
+                    <p class="fs-5 opacity-90 mb-4">কৃত্রিম বুদ্ধিমত্তা ও ভিজ্যুয়াল সিমুলেশনের মাধ্যমে বিজ্ঞানের জটিল বিষয়গুলোকে সহজভাবে জয় করো।</p>
                     <div class="d-flex gap-2 justify-content-center justify-content-md-start flex-wrap">
-                        <a href="quiz.html" class="btn btn-info text-dark fw-bold px-4 py-2 rounded-pill shadow-sm"><i class="fa-solid fa-play me-1"></i> কুইজ শুরু করো</a>
+                        <a href="quiz.html" class="btn btn-light text-primary fw-bold px-4 py-2 rounded-pill shadow-sm"><i class="fa-solid fa-play me-1"></i> কুইজ শুরু করো</a>
                         <a href="math-solver.html" class="btn btn-outline-light fw-bold px-4 py-2 rounded-pill"><i class="fa-solid fa-robot me-1"></i> AI টিউটর সাহায্য</a>
                     </div>
                 </div>
                 <div class="col-md-4 text-center mt-4 mt-md-0 d-none d-md-block">
-                    <i class="fa-solid fa-graduation-cap fa-6x text-info opacity-75"></i>
+                    <i class="fa-solid fa-microchip fa-6x text-info opacity-75"></i>
                 </div>
             </div>
         </div>
 
-        <!-- ডেইলি মিশন ও পয়েন্ট উইজেট -->
+        <!-- সাইকোলজিক্যাল ডেইলি মিশন ও কুইক স্ট্যাট -->
         <div class="row g-3 mb-4">
             <div class="col-md-8">
                 <div class="widget-card d-flex align-items-center justify-content-between flex-wrap gap-3">
                     <div>
-                        <span class="text-uppercase text-info fw-bold small">আজকের টাস্ক</span>
-                        <h5 class="fw-bold mb-1 text-white"><i class="fa-solid fa-circle-check text-success me-2"></i>পদার্থবিজ্ঞান কুইজ সম্পন্ন করো (+৫০ পয়েন্ট)</h5>
-                        <p class="text-light opacity-75 small mb-0">দৈনিক পড়া শেষ করে লিডারবোর্ডে ওপরে ওঠো।</p>
+                        <span class="text-uppercase text-muted fw-bold small">আজকের টাস্ক</span>
+                        <h5 class="fw-bold mb-1"><i class="fa-solid fa-circle-check text-success me-2"></i>পদার্থবিজ্ঞান কুইজ সম্পন্ন করো (+৫০ পয়েন্ট)</h5>
+                        <p class="text-muted small mb-0">দৈনিক পড়া শেষ করে লিডারবোর্ডে ওপরে ওঠো।</p>
                     </div>
-                    <a href="quiz.html" class="btn btn-info btn-sm rounded-pill px-3 fw-bold text-dark">এখনই করো</a>
+                    <a href="quiz.html" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold">এখনই করো</a>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="widget-card d-flex align-items-center justify-content-between">
                     <div>
-                        <span class="text-uppercase text-info fw-bold small">আপনার বর্তমান পয়েন্ট</span>
-                        <h3 class="fw-bold text-info mb-0" id="userScoreDisplay">৩০ Pts</h3>
+                        <span class="text-uppercase text-muted fw-bold small">আপনার বর্তমান পয়েন্ট</span>
+                        <h3 class="fw-bold text-primary mb-0" id="userScoreDisplay">৩০ Pts</h3>
                     </div>
-                    <div class="icon-box bg-info bg-opacity-20 text-info rounded-circle mb-0">
+                    <div class="icon-box bg-primary text-white rounded-circle mb-0">
                         <i class="fa-solid fa-trophy"></i>
                     </div>
                 </div>
@@ -173,11 +161,11 @@
         </div>
 
         <!-- মূল নেভিগেশন কার্ডসমূহ -->
-        <h5 class="fw-bold mb-3 text-info"><i class="fa-solid fa-compass me-2"></i>কোর লার্নিং ফিচারসমূহ</h5>
+        <h5 class="fw-bold mb-3"><i class="fa-solid fa-compass text-primary me-2"></i>কোর লার্নিং ফিচারসমূহ</h5>
         <div class="row g-3">
             <div class="col-6 col-md-4 col-lg-2">
                 <a href="math-solver.html" class="action-card">
-                    <div class="icon-box bg-primary bg-opacity-20 text-info">
+                    <div class="icon-box bg-primary bg-opacity-10 text-primary">
                         <i class="fa-solid fa-robot"></i>
                     </div>
                     <span class="fw-bold small">AI টিউটর</span>
@@ -185,7 +173,7 @@
             </div>
             <div class="col-6 col-md-4 col-lg-2">
                 <a href="video.html" class="action-card">
-                    <div class="icon-box bg-success bg-opacity-20 text-success">
+                    <div class="icon-box bg-success bg-opacity-10 text-success">
                         <i class="fa-solid fa-flask"></i>
                     </div>
                     <span class="fw-bold small">সায়েন্স ল্যাব</span>
@@ -193,7 +181,7 @@
             </div>
             <div class="col-6 col-md-4 col-lg-2">
                 <a href="quiz.html" class="action-card">
-                    <div class="icon-box bg-warning bg-opacity-20 text-warning">
+                    <div class="icon-box bg-warning bg-opacity-10 text-warning">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </div>
                     <span class="fw-bold small">সাপ্তাহিক কুইজ</span>
@@ -201,7 +189,7 @@
             </div>
             <div class="col-6 col-md-4 col-lg-2">
                 <a href="leaderboard.html" class="action-card">
-                    <div class="icon-box bg-danger bg-opacity-20 text-danger">
+                    <div class="icon-box bg-danger bg-opacity-10 text-danger">
                         <i class="fa-solid fa-trophy"></i>
                     </div>
                     <span class="fw-bold small">লিডারবোর্ড</span>
@@ -209,7 +197,7 @@
             </div>
             <div class="col-6 col-md-4 col-lg-2">
                 <a href="discussion.html" class="action-card">
-                    <div class="icon-box bg-secondary bg-opacity-20 text-light">
+                    <div class="icon-box bg-secondary bg-opacity-10 text-secondary">
                         <i class="fa-solid fa-comments"></i>
                     </div>
                     <span class="fw-bold small">ডিসকাশন ফোরাম</span>
@@ -217,7 +205,7 @@
             </div>
             <div class="col-6 col-md-4 col-lg-2">
                 <a href="parent-report.html" class="action-card">
-                    <div class="icon-box bg-info bg-opacity-20 text-info">
+                    <div class="icon-box bg-info bg-opacity-10 text-info">
                         <i class="fa-solid fa-chart-line"></i>
                     </div>
                     <span class="fw-bold small">প্রোগ্রেস রিপোর্ট</span>
@@ -228,13 +216,14 @@
     </div>
 
     <!-- ফুটার -->
-    <footer class="bg-dark text-white text-center py-4 mt-5 border-top border-secondary">
+    <footer class="bg-dark text-white text-center py-4 mt-5">
         <div class="container">
             <p class="mb-0 small text-muted">© 2026 WKD Bangla EdTech platform. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
+        // লোকাল মেমোরি থেকে বর্তমান পয়েন্ট ফেচ করে হোমপেজে দেখানো
         window.onload = function() {
             const score = localStorage.getItem('wkd_quiz_score') || '30';
             document.getElementById('userScoreDisplay').innerText = score + ' Pts';
