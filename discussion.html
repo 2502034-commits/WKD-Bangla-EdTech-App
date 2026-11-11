@@ -45,8 +45,8 @@
                 
                 <!-- পোস্ট করার ফর্ম -->
                 <div class="forum-card">
-                    <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-comments me-2"></i>স্টুডেন্ট ডিসকাশন ফোরাম</h4>
-                    <p class="text-muted small mb-4">তোমার কোনো প্রশ্ন বা সমস্যা থাকলে নিচে লিখে পোস্ট করো, সহপাঠীরা উত্তর দেবে।</p>
+                    <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-comments me-2"></i>স্টুডেন্ট ডিসকাশন ফোরাম (ক্লাউড)</h4>
+                    <p class="text-muted small mb-4">তোমার কোনো প্রশ্ন বা সমস্যা থাকলে নিচে লিখে পোস্ট করো, ফায়ারবেস ক্লাউডে সংরক্ষিত হবে।</p>
                     
                     <div class="mb-3">
                         <input type="text" id="authorInput" class="form-control mb-2 rounded-pill px-3" placeholder="তোমার নাম...">
@@ -59,9 +59,9 @@
 
                 <!-- পোস্ট ফিড -->
                 <div class="forum-card">
-                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-stream text-success me-2"></i>সাম্প্রতিক আলোচনা</h5>
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-stream text-success me-2"></i>ক্লাউডের সাম্প্রতিক আলোচনা</h5>
                     <div id="postsContainer">
-                        <!-- ডাইনামিক পোস্টগুলো এখানে লোড হবে -->
+                        <p class="text-muted text-center">পোস্ট লোড হচ্ছে...</p>
                     </div>
                 </div>
 
@@ -73,31 +73,12 @@
         <p class="mb-0">© 2026 WKD Bangla EdTech platform. All rights reserved.</p>
     </footer>
 
-    <script>
-        let posts = JSON.parse(localStorage.getItem('wkd_forum_posts') || JSON.stringify([
-            { author: "রাহিম আহমেদ", text: "পদার্থবিজ্ঞানের ভেক্টরের ডট গুণন নিয়ে কারো কি কোনো নোট আছে?", time: "আজ, সকাল ১০:১৫" },
-            { author: "ফাতেমা তুজ জোহরা", text: "ডিফারেন্সিয়েশনের সূত্রগুলো খুব সহজে মনে রাখার টেকনিকটা দারুণ লেগেছে!", time: "গতকাল, দুপুর ২:৩০" }
-        ]));
+    <!-- ফায়ারবেস ও ফোরাম লজিক -->
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, addFile, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        function renderPosts() {
-            const container = document.getElementById('postsContainer');
-            if (posts.length === 0) {
-                container.innerHTML = '<p class="text-muted text-center">এখনো কোনো পোস্ট নেই। প্রথম পোস্টটি তুমিই করো!</p>';
-                return;
-            }
-
-            container.innerHTML = posts.map((post, index) => `
-                <div class="post-box">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-user-circle text-primary me-1"></i> ${escapeHtml(post.author)}</h6>
-                        <span class="text-muted small">${escapeHtml(post.time)}</span>
-                    </div>
-                    <p class="mb-0 mt-2 text-secondary">${escapeHtml(post.text)}</p>
-                </div>
-            `).join('');
-        }
-
-        function addPost() {
+        window.addPost = async function() {
             const author = document.getElementById('authorInput').value.trim() || "অজ্ঞাত শিক্ষার্থী";
             const text = document.getElementById('postInput').value.trim();
 
@@ -106,33 +87,62 @@
                 return;
             }
 
-            const now = new Date();
-            const timeStr = `আজ, ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+            try {
+                // Firestore-এর 'forum_posts' কালেকশনে ডেটা সেভ করা
+                await addDoc(collection(db, "forum_posts"), {
+                    author: author,
+                    text: text,
+                    createdAt: new Date().toISOString()
+                });
 
-            posts.unshift({ author, text, time: timeStr });
-            localStorage.setItem('wkd_forum_posts', JSON.stringify(posts));
+                document.getElementById('postInput').value = '';
+                document.getElementById('authorInput').value = '';
+                alert('পোস্ট সফলভাবে ক্লাউডে জমা হয়েছে!');
+                loadPosts(); // পোস্ট লিস্ট রিলোড করা
+            } catch (error) {
+                console.error("Error adding post: ", error);
+                alert("পোস্ট করতে সমস্যা হয়েছে: " + error.message);
+            }
+        }
 
-            document.getElementById('postInput').value = '';
-            document.getElementById('authorInput').value = '';
-            renderPosts();
+        async function loadPosts() {
+            const container = document.getElementById('postsContainer');
+            try {
+                const querySnapshot = await getDocs(collection(db, "forum_posts"));
+                let postsHTML = '';
+                
+                if (querySnapshot.empty) {
+                    container.innerHTML = '<p class="text-muted text-center">এখনো কোনো পোস্ট নেই। প্রথম পোস্টটি তুমিই করো!</p>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const post = doc.data();
+                    postsHTML += `
+                        <div class="post-box">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-user-circle text-primary me-1"></i> ${escapeHtml(post.author)}</h6>
+                                <span class="text-muted small">অনলাইন</span>
+                            </div>
+                            <p class="mb-0 mt-2 text-secondary">${escapeHtml(post.text)}</p>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = postsHTML;
+            } catch (error) {
+                console.error("Error loading posts: ", error);
+                container.innerHTML = '<p class="text-danger text-center">ডেটা লোড করতে সমস্যা হয়েছে।</p>';
+            }
         }
 
         function escapeHtml(str) {
             return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
-        window.onload = renderPosts;
+        // পেজ লোড হওয়ার সাথে সাথে ক্লাউড থেকে পোস্টগুলো ফেচ করা
+        window.onload = loadPosts;
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then((reg) => console.log('Service Worker Registered!', reg))
-                    .catch((err) => console.log('Service Worker Failed!', err));
-            });
-        }
-        </script>
-    
 </body>
 </html>
